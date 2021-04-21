@@ -146,7 +146,7 @@ public class ProductService {
 	      .build();
 	}
 
-	public Response deletePayment(Integer productid) {
+	public Response deleteProduct(Integer productid) {
 		try {
 		      Connection con = connection.getConnection();
 		      if (con == null) return Response
