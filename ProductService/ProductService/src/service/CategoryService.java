@@ -153,4 +153,37 @@ public class CategoryService {
 		      .build();
 	}
 
+	public Response updateCategory(Category category) {
+		try
+		  {
+			  Connection con = connection.getConnection();
+		      if (con == null) return Response
+		        .status(Response.Status.INTERNAL_SERVER_ERROR)
+		        .entity("DataBase connectivity Error")
+		        .build();
+		  
+		  String query = "UPDATE category SET name=?,description=? WHERE id=?";
+		  PreparedStatement preparedStmt = con.prepareStatement(query);
+		 
+		  preparedStmt.setString(1, category.getName());
+		  preparedStmt.setString(2, category.getDescription());
+		  preparedStmt.setInt(3, category.getId());
+		  
+		  preparedStmt.execute();
+		  con.close();
+		  }
+		  catch (Exception e)
+		  {
+			  return Response
+				        .status(Response.Status.INTERNAL_SERVER_ERROR)
+				        .entity("Error while updating the item")
+				        .build();
+		  }
+		  
+		  return Response
+			      .status(Response.Status.CREATED)
+			      .entity(category)
+			      .build();
+	}
+
 }
