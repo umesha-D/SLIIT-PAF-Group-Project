@@ -23,8 +23,9 @@ CREATE TABLE researcher(
 	researchCategory INT NOT NULL,
 	
 	CONSTRAINT pk_researcher PRIMARY key(id),
-	CONSTRAINT fk_researcherCategory FOREIGN KEY(researchCategory) REFERENCES category(id)
-	
+	CONSTRAINT fk_researcherCategory FOREIGN KEY(researchCategory) REFERENCES category(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE
 );
 
 CREATE TABLE review(
@@ -37,7 +38,9 @@ CREATE TABLE review(
 	updatedAt TIMESTAMP DEFAULT NULL,
 	
 	CONSTRAINT pk_review PRIMARY key(id),
-	CONSTRAINT pk_review FOREIGN KEY(researcherId) REFERENCES researcher(id)
+	CONSTRAINT fk_review FOREIGN KEY(researcherId) REFERENCES researcher(id)
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE
 );
 
 -- dummy data
