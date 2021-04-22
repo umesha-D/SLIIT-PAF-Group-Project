@@ -134,4 +134,159 @@ public class ProductFundersService {
 
   }
 
+	public Response getAllProductWithFunders() {
+		 List<Map < String, Object >> res = new ArrayList <Map < String, Object >> ();
+		
+		 
+		 try {
+		      Connection con = connection.getConnection();
+		      if (con == null) return Response
+		        .status(Response.Status.INTERNAL_SERVER_ERROR)
+		        .entity("DataBase connectivity Error")
+		        .build();
+
+		      String queryForGetProductData = "SELECT * FROM product";
+		      Statement statement = con.createStatement();
+		      ResultSet result = statement.executeQuery(queryForGetProductData);
+
+		      while (result.next()) {
+		        int id = result.getInt("id");
+		        String product_name = result.getString("product_name");
+		        double product_price = result.getDouble("product_price");
+		        int owner_id = result.getInt("owner_id");
+		        String created_at = result.getString("created_at");
+		        String updated_at = result.getString("updated_at");
+		        boolean is_completed = result.getBoolean("is_completed");
+		        int category_id = result.getInt("category_id");
+		        Product product = new Product(product_name, product_price, owner_id, is_completed, category_id);
+		        product.setCreated_at(created_at);
+		        product.setId(id);
+		        product.setUpdated_at(updated_at);
+		        Map < String, Object > data = new HashMap<>();
+		          
+		        data.put("product", product);
+		        
+		        
+		        String queryNext = "SELECT funders.id, funders.funder_id FROM funders WHERE funders.id = " + id;
+			      Statement stmtNExt = con.createStatement();
+			      ResultSet rset = stmtNExt.executeQuery(queryNext);
+
+			      List<Object> fundingBody = new ArrayList<>();
+			      
+			      while (rset.next()) {
+			        int tid = rset.getInt("id");
+			        int funder_id = rset.getInt("funder_id");
+
+			        try {
+
+			          Client client = Client.create();
+
+			          WebResource webResource = client
+			            .resource("http://localhost:8282/FundingBodyService/api/v2/fbody/getfbodybyid/" + funder_id);
+
+			          ClientResponse response = webResource.accept("application/json")
+			            .get(ClientResponse.class);
+
+			          if (response.getStatus() != 200) {
+			            throw new RuntimeException("Failed : HTTP error code : " +
+			              response.getStatus());
+			          }
+
+			          Object output = response.getEntity(Object.class);
+			          fundingBody.add(output);
+
+			        } catch (Exception e) {
+
+			          e.printStackTrace();
+
+			        }
+			        
+			        data.put("funders", fundingBody);
+			        res.add(data);
+			      }
+
+		      }
+ 
+		      con.close();
+		    } catch (Exception e) {
+		      return Response
+		        .status(Response.Status.INTERNAL_SERVER_ERROR)
+		        .entity(e)
+		        .build();
+		    }
+
+		    return Response
+		      .status(Response.Status.OK)
+		      .entity(res)
+		      .build();
+	}
+
+	public Response getProductWithBuyer(Integer productid) {
+		Map < String, Object > res = new HashMap < String, Object > ();
+	    Product product = null;
+	    int buyerId = -99;
+
+	    try {
+	      Connection con = connection.getConnection();
+	      if (con == null) return Response
+	        .status(Response.Status.INTERNAL_SERVER_ERROR)
+	        .entity("DataBase connectivity Error")
+	        .build();
+
+	      String queryForGetProductData = "SELECT * FROM product WHERE id = " + productid;
+	      Statement statement = con.createStatement();
+	      ResultSet result = statement.executeQuery(queryForGetProductData);
+
+	      while (result.next()) {
+	        int id = result.getInt("id");
+	        String product_name = result.getString("product_name");
+	        double product_price = result.getDouble("product_price");
+	        int owner_id = result.getInt("owner_id");
+	        String created_at = result.getString("created_at");
+	        String updated_at = result.getString("updated_at");
+	        boolean is_completed = result.getBoolean("is_completed");
+	        int category_id = result.getInt("category_id");
+	        buyerId = result.getInt("buyer_id");
+	        product = new Product(product_name, product_price, owner_id, is_completed, category_id);
+	        product.setCreated_at(created_at);
+	        
+	        product.setId(id);
+	        product.setUpdated_at(updated_at);
+	      }
+
+	      Object output = null;
+		
+		        Client client = Client.create();
+
+		        WebResource webResource = client
+		          .resource("http://localhost:8080/BuyerService/api/v2/buyer/getbuyerbyid"+buyerId);
+
+		        ClientResponse response = webResource.accept("application/json")
+		          .get(ClientResponse.class);
+
+		        if (response.getStatus() != 200) {
+		          throw new RuntimeException("Failed : HTTP error code : " +
+		            response.getStatus());
+		        }
+		        output = response.getEntity(Object.class);
+
+		
+				
+	      res.put("product", product);
+	      res.put("buyer", output);
+	      con.close();
+
+	    } catch (Exception e) {
+	      return Response
+	        .status(Response.Status.INTERNAL_SERVER_ERROR)
+	        .entity(e)
+	        .build();
+	    }
+
+	    return Response
+	      .status(Response.Status.OK)
+	      .entity(res)
+	      .build();
+	}
+
 }

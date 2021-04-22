@@ -8,6 +8,10 @@ import javax.ws.rs.core.Response;
 import model.ProductFunders;
 import service.ProductFundersService;
 
+/*
+ *default Port : 8180 
+ *http://localhost:8180/ProductService/api/v2/productfunders/*
+*/
 @Path("/productfunders") 
 public class ProductFundersController {
 	
@@ -36,5 +40,20 @@ public class ProductFundersController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getProductWithFunder(@PathParam("productid") Integer productid) {
 		return productfundersService.getProductWithFunder(productid);
+	}
+	
+	@GET
+	@Path("/getallwithfunder")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAllProductWithFunders() {
+		return productfundersService.getAllProductWithFunders();
+	}
+	
+	
+	@GET
+	@Path("/getproductwithbuyer/{productid}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getProductWithBuyer(@PathParam("productid") Integer productid) {
+		return productfundersService.getProductWithBuyer(productid);
 	}
 }
