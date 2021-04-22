@@ -32,6 +32,19 @@ public class CategoryController {
 		return categoryService.addCategory(category);
 	}
 	
+	@PUT
+	@Path("/update/{categoryid}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response updateCategory(HashMap<String, ?> categoryData, @PathParam("categoryid") Integer categoryid) {
+		String name = (String) categoryData.get("name");
+		String description = (String) categoryData.get("description");
+	    category = new Category(name, description);
+	    category.setId(categoryid);
+	    
+		return categoryService.updateCategory(category);
+	}
+	
 	@GET
 	@Path("/getcategorys")
 	@Produces(MediaType.APPLICATION_JSON)
