@@ -27,10 +27,12 @@ public class PaymentService {
       Connection con = connection.getConnection();
       if (con == null) return Response
         .status(Response.Status.INTERNAL_SERVER_ERROR)
-        .entity("DataBase connectivity Error")
+        .entity("Database connectivity Error")
         .build();
+		
+		
 
-      String query = "INSERT INTO payement(recipient_id,total, payment_method,researcher_id, buyer_id) VALUES (?, ?, ?, ?, ?)";
+      String query = "INSERT INTO payement(recipient_id,total, payment_method,researcher_id, buyer_id,fundingbody_id) VALUES (?, ?, ?, ?, ?,?)";
       PreparedStatement preparedStmt = con.prepareStatement(query);
 
       preparedStmt.setInt(1, payment.getRecipientId());
@@ -38,6 +40,8 @@ public class PaymentService {
       preparedStmt.setString(3, payment.getPaymentMethod());
       preparedStmt.setInt(4, payment.getResearcheId());
       preparedStmt.setInt(5, payment.getBuyerId());
+      preparedStmt.setInt(6, payment.getFundingbodyId());
+      
 
       preparedStmt.execute();
       con.close();
@@ -55,13 +59,15 @@ public class PaymentService {
       .build();
 
   }
+  
+  
 
   public Response deletePayment(int paymentId) {
     try {
       Connection con = connection.getConnection();
       if (con == null) return Response
         .status(Response.Status.INTERNAL_SERVER_ERROR)
-        .entity("DataBase connectivity Error")
+        .entity("Database connectivity Error")
         .build();
 
       String query = "DELETE from payement WHERE id=?";
@@ -81,9 +87,11 @@ public class PaymentService {
 
     return Response
       .status(Response.Status.OK)
-      .entity("Succesfully Delected the payment data")
+      .entity("Succesfully Deleted the payment data")
       .build();
   }
+
+
 
   public Response getAllPayments() {
     List < Payment > payments = new ArrayList < Payment > ();
@@ -92,7 +100,7 @@ public class PaymentService {
       Connection con = connection.getConnection();
       if (con == null) return Response
         .status(Response.Status.INTERNAL_SERVER_ERROR)
-        .entity("DataBase connectivity Error")
+        .entity("Database connectivity Error")
         .build();
 
       String query = "select * from payement";
@@ -107,7 +115,8 @@ public class PaymentService {
         String paidAt = rs.getString("paidAt");
         int researcher_id = rs.getInt("researcher_id");
         int buyer_id = rs.getInt("buyer_id");
-        Payment payment = new Payment(recipient_id, total, payment_method, researcher_id, buyer_id);
+        int fundingbody_id = rs.getInt("fundingbody_id");
+        Payment payment = new Payment(recipient_id, total, payment_method, researcher_id, buyer_id,fundingbody_id);
         payment.setPaidAt(paidAt);
         payment.setId(id);
         payments.add(payment);
@@ -129,6 +138,8 @@ public class PaymentService {
 
   }
 
+
+
   public Response getPaymentById(int paymentid) {
     Payment payment = null;
 
@@ -136,7 +147,7 @@ public class PaymentService {
       Connection con = connection.getConnection();
       if (con == null) return Response
         .status(Response.Status.INTERNAL_SERVER_ERROR)
-        .entity("DataBase connectivity Error")
+        .entity("Database connectivity Error")
         .build();
 
       String query = "select * from payement where id = " + paymentid;
@@ -151,7 +162,8 @@ public class PaymentService {
         String paidAt = rs.getString("paidAt");
         int researcher_id = rs.getInt("researcher_id");
         int buyer_id = rs.getInt("buyer_id");
-        payment = new Payment(recipient_id, total, payment_method, researcher_id, buyer_id);
+        int fundingbody_id = rs.getInt("fundingbody_id");
+        payment = new Payment(recipient_id, total, payment_method, researcher_id, buyer_id, fundingbody_id);
         payment.setId(id);
         payment.setPaidAt(paidAt);
       }
@@ -176,12 +188,13 @@ public class PaymentService {
     Payment payment = null;
     Map < String, Object > res = new HashMap < String, Object > ();
     int buyer_id = -99;
+    int funder_id = -99;
 
     try {
       Connection con = connection.getConnection();
       if (con == null) return Response
         .status(Response.Status.INTERNAL_SERVER_ERROR)
-        .entity("DataBase connectivity Error")
+        .entity("Database connectivity Error")
         .build();
 
       String query = "select * from payement where id = " + paymentid;
@@ -196,7 +209,8 @@ public class PaymentService {
         String paidAt = rs.getString("paidAt");
         int researcher_id = rs.getInt("researcher_id");
         buyer_id = rs.getInt("buyer_id");
-        payment = new Payment(recipient_id, total, payment_method, researcher_id, buyer_id);
+        int fundingbody_id = rs.getInt("fundingbody_id");
+        payment = new Payment(recipient_id, total, payment_method, researcher_id, buyer_id, fundingbody_id);
         payment.setId(id);
         payment.setPaidAt(paidAt);
       }
@@ -208,7 +222,7 @@ public class PaymentService {
         Client client = Client.create();
 
         WebResource webResource = client
-          .resource("http://localhost:8081/BuyerService/api/v2/buyer/getbuyerbyid/" + buyer_id);
+          .resource("http://localhost:8080/BuyerService/api/v2/buyer/getbuyerbyid/" + buyer_id);
 
         ClientResponse response = webResource.accept("application/json")
           .get(ClientResponse.class);
@@ -221,14 +235,34 @@ public class PaymentService {
         Object output = response.getEntity(Object.class);
 
         res.put("Buyer", output);
+        
+        
+        WebResource webResourceForFunder = client
+                .resource("http://localhost:8282/FundingBodyService/api/v2/fbody/getfbodybyid/" + funder_id);
+
+              ClientResponse responseForFunder = webResourceForFunder.accept("application/json")
+                .get(ClientResponse.class);
+
+              if (responseForFunder.getStatus() != 200) {
+                throw new RuntimeException("Failed : HTTP error code : " +
+                  response.getStatus());
+              }
+
+              Object outputFunder = responseForFunder.getEntity(Object.class);
+
+              res.put("funder", outputFunder);
 
       } catch (Exception e) {
 
-        e.printStackTrace();
+    	  return Response
+    		        .status(Response.Status.INTERNAL_SERVER_ERROR)
+    		        .entity(e)
+    		        .build();
 
       }
 
       con.close();
+
 
     } catch (Exception e) {
       return Response
