@@ -9,6 +9,8 @@ public class Recipient {
 	
 	public Recipient() {
 		super();
+		
+		
 	}
 
 	public Recipient(String bank, String branch, String accountNumber) {
@@ -62,6 +64,8 @@ public class Recipient {
 	public String toString() {
 		return "Recipient [id=" + id + ", bank=" + bank + ", branch=" + branch + ", accountNumber=" + accountNumber
 				+ ", issuedAt=" + issuedAt + "]";
+				
+				
 	}
 
 }
