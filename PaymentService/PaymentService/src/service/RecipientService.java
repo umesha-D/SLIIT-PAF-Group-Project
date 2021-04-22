@@ -13,6 +13,8 @@ import model.Payment;
 import model.Recipient;
 import repository.DBConnection;
 
+
+
 public class RecipientService {
 	private DBConnection connection = new DBConnection();
 	
@@ -52,6 +54,8 @@ public class RecipientService {
 		      .entity(recipient)
 		      .build();
 	}
+	
+	
 
 	public Response getRecipients() {
 		List <Recipient> recipients = new ArrayList <Recipient> ();
@@ -60,7 +64,7 @@ public class RecipientService {
 	      Connection con = connection.getConnection();
 	      if (con == null) return Response
 	        .status(Response.Status.INTERNAL_SERVER_ERROR)
-	        .entity("DataBase connectivity Error")
+	        .entity("Database connectivity Error")
 	        .build();
 
 	      String query = "select * from recipient";
@@ -95,6 +99,8 @@ public class RecipientService {
       .entity(recipients)
       .build();
 	}
+	
+	
 
 	public Response getRecipientById(Integer recipientid) {
 		Recipient recipient = null;
@@ -103,7 +109,7 @@ public class RecipientService {
 	      Connection con = connection.getConnection();
 	      if (con == null) return Response
 	        .status(Response.Status.INTERNAL_SERVER_ERROR)
-	        .entity("DataBase connectivity Error")
+	        .entity("Database connectivity Error")
 	        .build();
 
 	      String query = "select * from recipient where id = " + recipientid;
@@ -136,4 +142,6 @@ public class RecipientService {
 	      .entity(recipient)
 	      .build();
 	}
+	
+	
 }

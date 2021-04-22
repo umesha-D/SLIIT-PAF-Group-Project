@@ -9,8 +9,11 @@ import model.Payment;
 import service.PaymentService;;
 
 
+
+
 @Path("/payment") 
 public class PaymentController {
+	
 	
 	private Payment payment;
 	private PaymentService paymentService = new PaymentService();
@@ -32,9 +35,13 @@ public class PaymentController {
 		Long buyerIdTemp = new Long((long) paymentData.get("buyerId"));
 		int buyerId = buyerIdTemp.intValue();
 		
-		payment = new Payment(recipienId, total, paymentMethod, researcherId, buyerId);
+		Long fundingbody_idTemp = new Long((long) paymentData.get("fundingbody_id"));
+		int fundingbody_id = fundingbody_idTemp.intValue();
+		
+		payment = new Payment(recipienId, total, paymentMethod, researcherId, buyerId, fundingbody_id);
 		return paymentService.addPayment(payment);
 	}
+	
 	
 	@GET
 	@Path("/getpayments")
@@ -42,6 +49,7 @@ public class PaymentController {
 	public Response getPayments() {
 		return paymentService.getAllPayments();
 	}
+	
 	
 	@GET
 	@Path("/getpaymentbyid/{paymentid}")
