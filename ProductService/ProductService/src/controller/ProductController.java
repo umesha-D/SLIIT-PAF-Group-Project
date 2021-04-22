@@ -8,6 +8,10 @@ import javax.ws.rs.core.Response;
 import model.Product;
 import service.ProductService;
 
+/*
+ *default Port : 8180 
+ *http://localhost:8180/ProductService/api/v2/product/*
+*/
 @Path("/product") 
 public class ProductController {	
 	
@@ -57,7 +61,7 @@ public class ProductController {
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteById(@PathParam("productid") Integer productid) {
-		return productService.deletePayment(productid);
+		return productService.deleteProduct(productid);
 	}
 	
 	
@@ -76,6 +80,14 @@ public class ProductController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getProductWithBuyer(@PathParam("productid") Integer productid) {
 		return productService.getProductWithBuyer(productid);
+	}
+	
+	@GET
+	@Path("/getproductswithbuyer")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getProductsWithBuyer() {
+		return productService.getProductsWithBuyer();
 	}
 
 }
