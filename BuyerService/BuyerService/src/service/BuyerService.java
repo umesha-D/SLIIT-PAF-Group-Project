@@ -196,6 +196,6 @@ public class BuyerService {
 		      .entity("Succesfully Delected the buyer")
 		      .build();
   }
-  
+
   
 }
