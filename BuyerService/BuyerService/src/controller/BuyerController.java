@@ -1,6 +1,8 @@
 package controller;
 
 import java.util.HashMap;
+import java.util.List;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -8,7 +10,10 @@ import javax.ws.rs.core.Response;
 import model.Buyer;
 import service.BuyerService;
 
-
+/*
+ *default Port : 8080 
+ *http://localhost:8080/BuyerService/api/v2/buyer/*
+*/
 @Path("/buyer") 
 public class BuyerController {
 	
@@ -33,7 +38,7 @@ public class BuyerController {
 	public Response getBuyers() {
 		return buyerService.getAllbuyers();
 	}
-	
+
 	@GET
 	@Path("/getbuyerbyid/{userId}")
 	@Consumes(MediaType.TEXT_PLAIN)
