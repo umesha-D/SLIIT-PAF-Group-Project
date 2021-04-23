@@ -8,19 +8,21 @@ public class Payment {
 	private String paidAt;
 	private int researcheId;
 	private int buyerId;
+	private int fundingbodyId;
 	
 	public Payment() {
 		super();
 	}
 
 	public Payment(int recipientId, double total, String paymentMethod,
-			int researcheId, int buyerId) {
+			int researcheId, int buyerId, int fundingbodyId) {
 		super();
 		this.recipientId = recipientId;
 		this.total = total;
 		this.paymentMethod = paymentMethod;
 		this.researcheId = researcheId;
 		this.buyerId = buyerId;
+		this.fundingbodyId = fundingbodyId;
 	}
 
 	public int getId() {
@@ -80,10 +82,19 @@ public class Payment {
 		this.buyerId = buyerId;
 	}
 
+	public int getFundingbodyId() {
+		return fundingbodyId;
+	}
+
+	public void setFundingbodyId(int fundingbodyId) {
+		this.fundingbodyId = fundingbodyId;
+	}
+
 	@Override
 	public String toString() {
 		return "Payment [id=" + id + ", recipientId=" + recipientId + ", total=" + total + ", paymentMethod="
-				+ paymentMethod + ", paidAt=" + paidAt + ", researcheId=" + researcheId + ", buyerId=" + buyerId + "]";
+				+ paymentMethod + ", paidAt=" + paidAt + ", researcheId=" + researcheId + ", buyerId=" + buyerId
+				+ ", fundingbodyId=" + fundingbodyId + "]";
 	}
-	
+
 }

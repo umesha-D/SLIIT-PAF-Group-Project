@@ -7,13 +7,13 @@ public class Researcher {
 	private String password;
 	private String createdAt;
 	private String updatedAt;
-	private String researchCategory;
+	private int researchCategory;
 	
 	public Researcher() {
 		super();
 	}
 
-	public Researcher(String name, String email, String password, String researchCategory) {
+	public Researcher(String name, String email, String password, int researchCategory) {
 		super();
 		this.name = name;
 		this.email = email;
@@ -68,12 +68,12 @@ public class Researcher {
 	public void setUpdatedAt(String updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-
-	public String getResearchCategory() {
+	
+	public int getResearchCategory() {
 		return researchCategory;
 	}
 
-	public void setResearchCategory(String researchCategory) {
+	public void setResearchCategory(int researchCategory) {
 		this.researchCategory = researchCategory;
 	}
 

@@ -146,7 +146,7 @@ public class ProductService {
 	      .build();
 	}
 
-	public Response deletePayment(Integer productid) {
+	public Response deleteProduct(Integer productid) {
 		try {
 		      Connection con = connection.getConnection();
 		      if (con == null) return Response
@@ -243,8 +243,6 @@ public class ProductService {
 
 	      res.put("product", product);
 
-	      try {
-
 	        Client client = Client.create();
 
 	        WebResource webResource = client
@@ -262,12 +260,6 @@ public class ProductService {
 
 	        res.put("Buyer", output);
 
-	      } catch (Exception e) {
-
-	        e.printStackTrace();
-
-	      }
-
 	      con.close();
 
 	    } catch (Exception e) {
@@ -280,6 +272,144 @@ public class ProductService {
 	      .status(Response.Status.OK)
 	      .entity(res)
 	      .build();
+	}
+
+	public Response getProductsWithData() {
+		
+	    List<Map < String, Object >> result = new ArrayList<Map<String,Object>>();
+	    List<?> resultData = new ArrayList<>();
+	    List<?> resultDataResearcher = new ArrayList<>();
+	    
+	    try {
+	      Connection con = connection.getConnection();
+	      if (con == null) return Response
+	        .status(Response.Status.INTERNAL_SERVER_ERROR)
+	        .entity("DataBase connectivity Error")
+	        .build();
+
+	      String query = "select * from product";
+	      Statement stmt = con.createStatement();
+	      ResultSet rs = stmt.executeQuery(query);
+	      
+	      Client client = Client.create();
+	      WebResource webResource = client
+		          .resource("http://localhost:8080/BuyerService/api/v2/buyer/getbuyers/");
+
+		        ClientResponse response = webResource.accept("application/json")
+		          .get(ClientResponse.class);
+
+		        if (response.getStatus() != 200) {
+		          throw new RuntimeException("Failed : HTTP error code : " +
+		            response.getStatus());
+		        }
+
+		  Object output = response.getEntity(Object.class);
+		  resultData = (List<?>)output;
+		  
+	      WebResource webResource2 = client
+		          .resource("http://localhost:8090/ResearcherService/api/v2/researcher/getresearchers");
+
+		        ClientResponse response2 = webResource2.accept("application/json")
+		          .get(ClientResponse.class);
+
+		        if (response2.getStatus() != 200) {
+		          throw new RuntimeException("Failed : HTTP error code : " +
+		            response.getStatus());
+		        }
+
+		  Object output2 = response2.getEntity(Object.class);
+		  resultDataResearcher = (List<?>)output2;
+		  
+	      
+
+	      while (rs.next()) {
+	    	    int id = rs.getInt("id");
+		        String product_name = rs.getString("product_name");
+		        double product_price = rs.getDouble("product_price");
+		        int owner_id = rs.getInt("owner_id");
+		        int buyer_id = rs.getInt("buyer_id");
+		        String created_at = rs.getString("created_at");
+		        String updated_at = rs.getString("updated_at");
+		        boolean is_completed = rs.getBoolean("is_completed");
+		        int category_id = rs.getInt("category_id");
+		        Product product = new Product(product_name, product_price, owner_id, is_completed, category_id);
+		        product.setCreated_at(created_at);
+		        product.setBuyerId(buyer_id);
+		        product.setId(id);
+		        product.setUpdated_at(updated_at);
+		        
+		        Map < String, Object > res = new HashMap < String, Object > ();
+		        res.put("pruduct", product);
+		        
+		        resultData
+		        	.stream()
+		        	.forEach(data -> {
+		        		HashMap<String, ?> x = (HashMap<String, ?>) data;
+		        		if(((int)(long)(x.get("id"))) == buyer_id) {
+		        			res.put("buyer", data);
+		        		}
+		        	});
+		        	
+		        if(!res.containsKey("buyer")) {
+		        	res.put("buyer", null);
+		        }
+		        
+		        resultDataResearcher
+	        	.stream()
+	        	.forEach(data -> {
+	        		HashMap<String, ?> x = (HashMap<String, ?>) data;
+	        		if(((int)(long)(x.get("id"))) == owner_id) {
+	        			res.put("owner", data);
+	        		}
+	        	});
+	        	
+		        result.add(res);
+	      }
+	      con.close();
+
+	    } catch (Exception e) {
+	      return Response
+	        .status(Response.Status.INTERNAL_SERVER_ERROR)
+	        .entity(e)
+	        .build();
+	    }
+	    return Response
+	      .status(Response.Status.OK)
+	      .entity(result)
+	      .build();
+	}
+
+	public Response updateProduct(Product product) {
+		try
+		  {
+			  Connection con = connection.getConnection();
+		      if (con == null) return Response
+		        .status(Response.Status.INTERNAL_SERVER_ERROR)
+		        .entity("DataBase connectivity Error")
+		        .build();
+		  
+		  String query = "UPDATE product SET product_name=?,product_price=?,updated_at=CURRENT_TIMESTAMP WHERE id=?";
+		  PreparedStatement preparedStmt = con.prepareStatement(query);
+		 
+		  preparedStmt.setString(1, product.getProductName());
+		  preparedStmt.setDouble(2, product.getProductPrice());
+		  preparedStmt.setInt(3, product.getId());
+		  
+		  preparedStmt.execute();
+		  con.close();
+		  }
+		  catch (Exception e)
+		  {
+			  return Response
+				        .status(Response.Status.INTERNAL_SERVER_ERROR)
+				        .entity("Error while updating the item")
+				        .build();
+		  }
+		  
+		  return Response
+			      .status(Response.Status.CREATED)
+			      .entity(product)
+			      .build();
 	}
 
 }
