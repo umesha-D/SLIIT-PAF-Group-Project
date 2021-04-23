@@ -23,8 +23,6 @@ public class Payment {
 		this.researcheId = researcheId;
 		this.buyerId = buyerId;
 		this.fundingbodyId = fundingbodyId;
-		
-		
 	}
 
 	public int getId() {
@@ -91,8 +89,6 @@ public class Payment {
 	public void setFundingbodyId(int fundingbodyId) {
 		this.fundingbodyId = fundingbodyId;
 	}
-	
-	
 
 	@Override
 	public String toString() {

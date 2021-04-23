@@ -22,6 +22,8 @@ public class PaymentService {
 
   private DBConnection connection = new DBConnection();
 
+//Add Payment
+
   public Response addPayment(Payment payment) {
     try {
       Connection con = connection.getConnection();
@@ -29,8 +31,6 @@ public class PaymentService {
         .status(Response.Status.INTERNAL_SERVER_ERROR)
         .entity("Database connectivity Error")
         .build();
-		
-		
 
       String query = "INSERT INTO payement(recipient_id,total, payment_method,researcher_id, buyer_id,fundingbody_id) VALUES (?, ?, ?, ?, ?,?)";
       PreparedStatement preparedStmt = con.prepareStatement(query);
@@ -61,6 +61,7 @@ public class PaymentService {
   }
   
   
+  //Delete Payment
 
   public Response deletePayment(int paymentId) {
     try {
@@ -91,7 +92,7 @@ public class PaymentService {
       .build();
   }
 
-
+  //Get All Payments
 
   public Response getAllPayments() {
     List < Payment > payments = new ArrayList < Payment > ();
@@ -137,8 +138,8 @@ public class PaymentService {
       .build();
 
   }
-
-
+  
+  // Get Payment By Id
 
   public Response getPaymentById(int paymentid) {
     Payment payment = null;
@@ -182,6 +183,8 @@ public class PaymentService {
       .build();
 
   }
+
+//Payment with users
 
   public Response getPaymentWithUser(Integer paymentid) {
 
@@ -263,7 +266,6 @@ public class PaymentService {
 
       con.close();
 
-
     } catch (Exception e) {
       return Response
         .status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -276,5 +278,108 @@ public class PaymentService {
       .build();
 
   }
+
+// Get All Payment Details
+  
+	public Response getPaymenAllDetails() {
+		List<Map<String, ?>> res = new ArrayList<Map<String, ?>>();
+		List<?> resultData = new ArrayList<>();
+		List<?> resultDataResearcher = new ArrayList<>();
+		try {
+		      Connection con = connection.getConnection();
+		      if (con == null) return Response
+		        .status(Response.Status.INTERNAL_SERVER_ERROR)
+		        .entity("Database connectivity Error")
+		        .build();
+
+		      String query = "select * from payement";
+		      Statement stmt = con.createStatement();
+		      ResultSet rs = stmt.executeQuery(query);
+		      
+		      
+		      Client client = Client.create();
+		      WebResource webResource = client
+			          .resource("http://localhost:8080/BuyerService/api/v2/buyer/getbuyers/");
+
+			        ClientResponse response = webResource.accept("application/json")
+			          .get(ClientResponse.class);
+
+			        if (response.getStatus() != 200) {
+			          throw new RuntimeException("Failed : HTTP error code : " +
+			            response.getStatus());
+			        }
+
+			  Object output = response.getEntity(Object.class);
+			  resultData = (List<?>)output;
+			  
+		      WebResource webResource2 = client
+			          .resource("http://localhost:8282/FundingBodyService/api/v2/fbody/getfbodys");
+
+			        ClientResponse response2 = webResource2.accept("application/json")
+			          .get(ClientResponse.class);
+
+			        if (response2.getStatus() != 200) {
+			          throw new RuntimeException("Failed : HTTP error code : " +
+			            response.getStatus());
+			        }
+
+			  Object output2 = response2.getEntity(Object.class);
+			  resultDataResearcher = (List<?>)output2;
+			  
+
+		      while (rs.next()) {
+		        int id = rs.getInt("id");
+		        int recipient_id = rs.getInt("recipient_id");
+		        double total = rs.getDouble("total");
+		        String payment_method = rs.getString("payment_method");
+		        String paidAt = rs.getString("paidAt");
+		        int researcher_id = rs.getInt("researcher_id");
+		        int buyer_id = rs.getInt("buyer_id");
+		        int fundingbody_id = rs.getInt("fundingbody_id");
+		        Payment payment = new Payment(recipient_id, total, payment_method, researcher_id, buyer_id, fundingbody_id);
+		        Map<String, Object> temp = new HashMap<String, Object>();
+		        payment.setId(id);
+		        payment.setPaidAt(paidAt);
+		        
+		        temp.put("payment", payment);
+		        
+		        resultData
+	        	.stream()
+	        	.forEach(data -> {
+	        		HashMap<String, ?> x = (HashMap<String, ?>) data;
+	        		if(((int)(long)(x.get("id"))) == buyer_id) {
+	        			temp.put("buyer", data);
+	        		}
+	        	});
+	        	
+		        if(!temp.containsKey("buyer")) {
+		        	temp.put("buyer", null);
+		        }
+		        
+		        resultDataResearcher
+	        	.stream()
+	        	.forEach(data -> {
+	        		HashMap<String, ?> x = (HashMap<String, ?>) data;
+	        		if(((int)(long)(x.get("id"))) == fundingbody_id) {
+	        			temp.put("fundingbody", data);
+	        		}
+	        	});
+		        
+		        if(!temp.containsKey("fundingbody")) {
+		        	temp.put("fundingbody", null);
+		        }
+		        res.add(temp);
+		      }
+		} catch (Exception e) {
+	    	  return Response
+	    		        .status(Response.Status.INTERNAL_SERVER_ERROR)
+	    		        .entity(e)
+	    		        .build();
+	      }     
+		 return Response
+ 		        .status(Response.Status.OK)
+ 		        .entity(res)
+ 		        .build();
+	}
 
 }

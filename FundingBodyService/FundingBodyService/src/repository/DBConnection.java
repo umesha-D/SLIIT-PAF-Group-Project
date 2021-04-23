@@ -3,9 +3,8 @@ package repository;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-
-
 public class DBConnection {
+	
   public Connection getConnection() {
     Connection con = null;
     try {
@@ -15,9 +14,8 @@ public class DBConnection {
     } catch (Exception e) {
       e.printStackTrace();
     }
-	
     return con;
-	
-	
   }
+  
+  
 }
