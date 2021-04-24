@@ -65,7 +65,7 @@ public class CategoryController {
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteById(@PathParam("categoryid") Integer categoryid) {
-		return categoryService.deletePayment(categoryid);
+		return categoryService.deleteCategory(categoryid);
 	}
 	
 }

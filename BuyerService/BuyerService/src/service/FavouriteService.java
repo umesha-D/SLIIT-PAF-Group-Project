@@ -159,5 +159,36 @@ public class FavouriteService {
 		  	        .entity(res)
 		  	        .build();
 	}
+
+	public Response removeFromFavourite(Favourite favourite) {
+		try {
+		      Connection con = connection.getConnection();
+		      if (con == null) return Response
+		        .status(Response.Status.INTERNAL_SERVER_ERROR)
+		        .entity("DataBase connectivity Error")
+		        .build();
+
+		      String query = "DELETE FROM favourites WHERE userId=? AND productId=?";
+		      PreparedStatement preparedStmt = con.prepareStatement(query);
+
+		      preparedStmt.setInt(1, favourite.getUserid());
+		      preparedStmt.setInt(2, favourite.getProductId());
+
+		      
+		      preparedStmt.execute();
+		      con.close();
+		      
+		      favourite.setAddedAt("A few seconds ago");
+		    } catch (Exception e) {
+		      return Response
+		        .status(Response.Status.INTERNAL_SERVER_ERROR)
+		        .entity("Error while updating data")
+		        .build();
+		    }
+		    return Response
+		      .status(Response.Status.CREATED)
+		      .entity(favourite)
+		      .build();
+	}
 	
 }
