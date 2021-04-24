@@ -26,9 +26,23 @@ public class FavouriteController {
 	public Response addAsAFavourite(HashMap<String, ?> Data) {
 		Long userIdTemp = new Long((long) Data.get("id"));
 		int userId = userIdTemp.intValue();	
-		int productId = (int) Data.get("productId");
+		Long productIdTemp = new Long((long) Data.get("productId"));
+		int productId = productIdTemp.intValue();	;
 		favourite = new Favourite(userId, productId);
 		return favouriteService.addAsAFavourite(favourite);
+	}
+	
+	@DELETE
+	@Path("/remove")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response removeFromFavourite(HashMap<String, ?> Data) {
+		Long userIdTemp = new Long((long) Data.get("id"));
+		int userId = userIdTemp.intValue();	
+		Long productIdTemp = new Long((long) Data.get("productId"));
+		int productId = productIdTemp.intValue();	;
+		favourite = new Favourite(userId, productId);
+		return favouriteService.removeFromFavourite(favourite);
 	}
 	
 	@GET
@@ -44,6 +58,6 @@ public class FavouriteController {
 	public Response getFavoutesDetails(@PathParam("buyerid") Integer buyerid) {
 		return favouriteService.getFavoutesDetails(buyerid);
 	}
-	
+
 	
 }
