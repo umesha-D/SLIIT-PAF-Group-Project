@@ -13,9 +13,8 @@ public class Review {
 		super();
 	}
 
-	public Review(int id, String title, String details, int researcherId, int submiterId) {
+	public Review(String title, String details, int researcherId, int submiterId) {
 		super();
-		this.id = id;
 		this.title = title;
 		this.details = details;
 		this.researcherId = researcherId;

@@ -1,11 +1,14 @@
 package service;
 
 import java.sql.Connection;
+import java.util.Random;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
@@ -196,6 +199,158 @@ public class BuyerService {
 		      .entity("Succesfully Delected the buyer")
 		      .build();
   }
-  
-  
+
+	public Response login(String emaill, String password) {
+		String currentPassword = "";
+	    
+	    try {
+	      Connection con = connection.getConnection();
+	      if (con == null) return Response
+	        .status(Response.Status.INTERNAL_SERVER_ERROR)
+	        .entity("DataBase connectivity Error")
+	        .build();
+
+	      String query = "select * from buyer where email = '"+ emaill +"'";
+	      Statement stmt = con.createStatement();
+	      ResultSet rs = stmt.executeQuery(query);
+
+	      while (rs.next()) {
+	         currentPassword = rs.getString("password");
+	      }
+ 
+	      
+	      if(!currentPassword.equals(password)) {
+	    	  return Response
+	    		        .status(Response.Status.FORBIDDEN)
+	    		        .entity("Invalid credetials")
+	    		        .build();
+	      }else {
+	    	  Random rand = new Random();
+	    	  double int_random = rand.nextDouble() * 3946765F; 
+	    	  
+	    	  String createToken = "UPDATE buyer SET token = ?,updatedAt=CURRENT_TIMESTAMP WHERE email=?";
+	    	  PreparedStatement preparedStmt = con.prepareStatement(createToken);
+	    	 
+	    	  preparedStmt.setString(1, String.valueOf(int_random));
+	    	  preparedStmt.setString(2, emaill);
+
+	    	  preparedStmt.execute();
+	    	  con.close();
+	    	  
+	    	  Map<String, String> tokenResult = new HashMap<String, String>(); 
+	    	  tokenResult.put("token",  String.valueOf(int_random)+emaill);
+	    	  tokenResult.put("metadata",  "Add email and token in seperate headers when making requests.");
+	    	  
+	    	  return Response
+	    		        .status(Response.Status.OK)
+	    		        .entity(tokenResult)
+	    		        .build(); 
+	      }
+	      
+	      
+
+	    } catch (Exception e) {
+	      return Response
+	        .status(Response.Status.INTERNAL_SERVER_ERROR)
+	        .entity(e)
+	        .build();
+	   }
+	}
+
+
+	public Response vertify(String email, String token) {
+		String tokenFromDB = "";
+	    
+	    try {
+	      Connection con = connection.getConnection();
+	      if (con == null) return Response
+	        .status(Response.Status.FORBIDDEN)
+	        .entity("DataBase connectivity Error")
+	        .build();
+
+	      String query = "select * from buyer where email = '"+ email +"'";
+	      Statement stmt = con.createStatement();
+	      ResultSet rs = stmt.executeQuery(query);
+
+	      while (rs.next()) {
+	    	  tokenFromDB = rs.getString("token");
+	      }
+ 
+	      
+	      if(tokenFromDB.equals(token)) {
+	    	  return Response
+	    		        .status(Response.Status.OK)
+	    		        .entity("authenticated")
+	    		        .build(); 
+	      }else {
+	    	  return Response
+	    		        .status(Response.Status.FORBIDDEN)
+	    		        .entity("Invalid token")
+	    		        .build();
+	      }
+	      
+	      
+
+	    } catch (Exception e) {
+	      return Response
+	        .status(Response.Status.FORBIDDEN)
+	        .entity(e)
+	        .build();
+	   }
+	}
+
+	public Response logout(String email, String token) {
+		String currentToken = "";
+	    
+	    try {
+	      Connection con = connection.getConnection();
+	      if (con == null) return Response
+	        .status(Response.Status.INTERNAL_SERVER_ERROR)
+	        .entity("DataBase connectivity Error")
+	        .build();
+
+	      String query = "select * from buyer where email = '"+ email +"'";
+	      Statement stmt = con.createStatement();
+	      ResultSet rs = stmt.executeQuery(query);
+
+	      while (rs.next()) {
+	         currentToken = rs.getString("token");
+	      }
+ 
+	      
+	      if(!currentToken.equals(token)) {
+	    	  return Response
+	    		        .status(Response.Status.FORBIDDEN)
+	    		        .entity("Invalid credetials")
+	    		        .build();
+	      }else {
+	    	  Random rand = new Random();
+	    	  
+	    	  String createToken = "UPDATE buyer SET token = ?,updatedAt=CURRENT_TIMESTAMP WHERE email=?";
+	    	  PreparedStatement preparedStmt = con.prepareStatement(createToken);
+	    	 
+	    	  preparedStmt.setString(1, null);
+	    	  preparedStmt.setString(2, email);
+
+	    	  preparedStmt.execute();
+	    	  con.close();
+	    	  
+	    	  Map<String, String> tokenResult = new HashMap<String, String>(); 
+	    	  tokenResult.put("status",  "logout succesfully");
+	    	  
+	    	  return Response
+	    		        .status(Response.Status.OK)
+	    		        .entity(tokenResult)
+	    		        .build(); 
+	      }
+	      
+	      
+
+	    } catch (Exception e) {
+	      return Response
+	        .status(Response.Status.INTERNAL_SERVER_ERROR)
+	        .entity(e)
+	        .build();
+	   }
+	}
 }

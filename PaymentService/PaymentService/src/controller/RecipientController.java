@@ -14,6 +14,12 @@ import javax.ws.rs.core.Response;
 import model.Recipient;
 import service.RecipientService;
 
+/*
+ *default Port : 8081 
+ *http://localhost:8081/PaymentService/api/v2/recipient/*
+*/
+
+
 @Path("/recipient") 
 public class RecipientController {
 	

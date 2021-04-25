@@ -8,6 +8,7 @@ public class Buyer {
 	private String email;
 	private String regiteredAt;
 	private String updatedAt;
+	private String token;
 	
 	public int getId() {
 		return id;
@@ -63,10 +64,20 @@ public class Buyer {
 	public void setUpdatedAt(String updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-	
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
 	@Override
 	public String toString() {
 		return "Buyer [id=" + id + ", userName=" + userName + ", password=" + password + ", email=" + email
-				+ ", regiteredAt=" + regiteredAt + ", updatedAt=" + updatedAt + "]";
+				+ ", regiteredAt=" + regiteredAt + ", updatedAt=" + updatedAt + ", token=" + token + "]";
 	}
+	
+	
 }

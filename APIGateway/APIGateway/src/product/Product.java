@@ -157,6 +157,47 @@ public class Product {
 	
 	
 	@GET
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+	@Path("/buyproduct/{productId}/{buyerid}")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response buyProduct(@PathParam("productId") Integer productId, @PathParam("buyerid") Integer buyerid) {
+		Object output = null;
+		try {
+
+	        Client client = Client.create();
+
+	        WebResource webResource = client
+	          .resource("http://localhost:8180/ProductService/api/v2/product/buyproduct/"+productId+"/"+buyerid);
+
+	        ClientResponse response = webResource.accept("application/json")
+	          .get(ClientResponse.class);
+
+	        if (response.getStatus() != 200) {
+	          throw new RuntimeException("Failed : HTTP error code : " +
+	            response.getStatus());
+	        }
+	        output = response.getEntity(Object.class);
+
+	      } catch (Exception e) {
+	    	  return Response
+	    		        .status(Response.Status.INTERNAL_SERVER_ERROR)
+	    		        .entity(e)
+	    		        .build();
+	      }
+			return Response
+			        .status(Response.Status.OK)
+			        .entity(output)
+			        .build();
+	}
+	
+	
+	@GET
+>>>>>>> b89e1ab6e6c7003368121754fa21839e60eed5a0
+>>>>>>> 627bcc3d25b61d80d3c8b7af9491e738bffa736e
 	@Path("/getproductwithbuyer/{productid}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)

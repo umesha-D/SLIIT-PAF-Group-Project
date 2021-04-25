@@ -9,11 +9,14 @@ import model.Payment;
 import service.PaymentService;;
 
 
+/*
+ *default Port : 8081 
+ *http://localhost:8081/PaymentService/api/v2/payment/*
+*/
 
 
 @Path("/payment") 
 public class PaymentController {
-	
 	
 	private Payment payment;
 	private PaymentService paymentService = new PaymentService();
@@ -42,14 +45,12 @@ public class PaymentController {
 		return paymentService.addPayment(payment);
 	}
 	
-	
 	@GET
 	@Path("/getpayments")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getPayments() {
 		return paymentService.getAllPayments();
 	}
-	
 	
 	@GET
 	@Path("/getpaymentbyid/{paymentid}")
@@ -58,8 +59,6 @@ public class PaymentController {
 	public Response getBuyerById(@PathParam("paymentid") Integer paymentid) {
 		return paymentService.getPaymentById(paymentid);
 	}
-	
-	
     
 	@DELETE
 	@Path("/deletebyid/{paymentId}")
@@ -69,15 +68,20 @@ public class PaymentController {
 		return paymentService.deletePayment(paymentId);
 	}
 	
-	
-	
 	@GET
-	@Path("/getpaymentwithuser/{paymentid}")
+	@Path("/getpaymentwithdata/{paymentid}")
 	public Response getPaymentWithUser(@PathParam("paymentid") Integer paymentid) {
 		return paymentService.getPaymentWithUser(paymentid);
 	}
 	
-			
+	
+	@GET
+	@Path("/getpaymenalldetails")
+	public Response getPaymenAllDetails() {
+		return paymentService.getPaymenAllDetails();
+	}
+		
+		
 }
 	
 
