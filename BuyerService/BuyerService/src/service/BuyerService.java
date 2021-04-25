@@ -196,7 +196,7 @@ public class BuyerService {
 	  
 	  return Response
 		      .status(Response.Status.OK)
-		      .entity("Succesfully Delected the buyer")
+		      .entity("Succesfully Deleted the buyer")
 		      .build();
   }
 
