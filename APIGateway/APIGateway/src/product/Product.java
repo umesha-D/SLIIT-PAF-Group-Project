@@ -157,6 +157,8 @@ public class Product {
 	
 	
 	@GET
+<<<<<<< HEAD
+=======
 	@Path("/buyproduct/{productId}/{buyerid}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -192,6 +194,7 @@ public class Product {
 	
 	
 	@GET
+>>>>>>> b89e1ab6e6c7003368121754fa21839e60eed5a0
 	@Path("/getproductwithbuyer/{productid}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)

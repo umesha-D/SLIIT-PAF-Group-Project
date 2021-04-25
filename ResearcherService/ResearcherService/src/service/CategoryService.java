@@ -1,10 +1,12 @@
 package service;
 
 import java.sql.Connection;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.ws.rs.core.Response;
@@ -18,7 +20,7 @@ public class CategoryService {
 
 	private DBConnection connection = new DBConnection();
 	
-	public Response addCategory(Category category) {
+	public Response addCategory(HashMap<String, ?> categoryData) {
 		try {
 		      Connection con = connection.getConnection();
 		      if (con == null) return Response
@@ -29,8 +31,8 @@ public class CategoryService {
 		      String query = "INSERT INTO category(categoryName,description) VALUES (?, ?)";
 		      PreparedStatement preparedStmt = con.prepareStatement(query);
 
-		      preparedStmt.setString(1, category.getCategoryName());
-		      preparedStmt.setString(2, category.getDescription());
+		      preparedStmt.setString(1, (String) categoryData.get("categoryName"));
+		      preparedStmt.setString(2, (String) categoryData.get("description"));
 
 
 		      preparedStmt.execute();
@@ -44,7 +46,7 @@ public class CategoryService {
 		    }
 		    return Response
 		      .status(Response.Status.CREATED)
-		      .entity(category)
+		      .entity("Researcher category created")
 		      .build();
 	}
 
@@ -152,7 +154,7 @@ public class CategoryService {
 		      .build();
 	}
 
-	public Response updateCategory(Category categoryData) {
+	public Response updateCategory(HashMap<String, ?> categoryData, Integer categoryid) {    
 		try
 		  {
 			  Connection con = connection.getConnection();
@@ -164,9 +166,9 @@ public class CategoryService {
 		  String query = "UPDATE category SET categoryName=?,description=? WHERE id=?";
 		  PreparedStatement preparedStmt = con.prepareStatement(query);
 		 
-		  preparedStmt.setString(1, categoryData.getCategoryName());
-		  preparedStmt.setString(2, categoryData.getDescription());
-		  preparedStmt.setInt(3, categoryData.getId());
+		  preparedStmt.setString(1, (String) categoryData.get("categoryName"));
+		  preparedStmt.setString(2, (String) categoryData.get("description"));
+		  preparedStmt.setInt(3, categoryid);
 		  
 		  preparedStmt.execute();
 		  con.close();
@@ -181,7 +183,7 @@ public class CategoryService {
 		  
 		  return Response
 			      .status(Response.Status.CREATED)
-			      .entity(categoryData)
+			      .entity("Researcher category updated")
 			      .build();
 	}
 	

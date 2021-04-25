@@ -3,12 +3,15 @@ package service;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 import model.Category;
@@ -19,8 +22,8 @@ public class ResearcherService {
 	
 	private DBConnection connection = new DBConnection();
 
-	public Response addResearcher(Researcher researcher) {
-		try {
+	public Response addResearcher(HashMap<String, ?> researcherData) throws SQLException {
+
 		      Connection con = connection.getConnection();
 		      if (con == null) return Response
 		        .status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -30,31 +33,26 @@ public class ResearcherService {
 		      String query = "INSERT INTO researcher(name,email,password,researchCategory) VALUES (?, ?, ?, ?)";
 		      PreparedStatement preparedStmt = con.prepareStatement(query);
 
-		      preparedStmt.setString(1, researcher.getName());
-		      preparedStmt.setString(2, researcher.getEmail());
-		      preparedStmt.setString(3, researcher.getPassword());
-		      preparedStmt.setInt(4, researcher.getResearchCategory());
+		      preparedStmt.setString(1, (String) researcherData.get("name"));
+		      preparedStmt.setString(2, (String) researcherData.get("email"));
+		      preparedStmt.setString(3, (String) researcherData.get("password"));
+		      preparedStmt.setInt(4, (new Long((long) researcherData.get("researchCategory")).intValue()));
 
-		      researcher.setCreatedAt("A few seconds ago");
+
 		      preparedStmt.execute();
 		      con.close();
 
-		    } catch (Exception e) {
-		      return Response
-		        .status(Response.Status.INTERNAL_SERVER_ERROR)
-		        .entity(e)
-		        .build();
-		    }
+		   
 		    return Response
 		      .status(Response.Status.CREATED)
-		      .entity(researcher)
+		      .entity("Researcher inserted succesfully")
 		      .build();
 	}
 
-	public Response getAllResearchers() {
+	public Response getAllResearchers() throws SQLException {
 		List <Researcher> researchers = new ArrayList<Researcher> ();
 
-	    try {
+
 	      Connection con = connection.getConnection();
 	      if (con == null) return Response
 	        .status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -83,12 +81,7 @@ public class ResearcherService {
 	      }
 	      con.close();
 
-	    } catch (Exception e) {
-	      return Response
-	        .status(Response.Status.INTERNAL_SERVER_ERROR)
-	        .entity(e)
-	        .build();
-	    }
+	
 
 	    return Response
 	      .status(Response.Status.OK)
@@ -96,10 +89,9 @@ public class ResearcherService {
 	      .build();
 	}
 
-	public Response getResearcherById(Integer researcherid) {
+	public Response getResearcherById(Integer researcherid) throws SQLException {
 		Researcher researcher = null;
 
-	    try {
 	      Connection con = connection.getConnection();
 	      if (con == null) return Response
 	        .status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -128,12 +120,7 @@ public class ResearcherService {
 	      }
 	      con.close();
 
-	    } catch (Exception e) {
-	      return Response
-	        .status(Response.Status.INTERNAL_SERVER_ERROR)
-	        .entity(e)
-	        .build();
-	    }
+	
 
 	    return Response
 	      .status(Response.Status.OK)
@@ -141,8 +128,8 @@ public class ResearcherService {
 	      .build();
 	}
 
-	public Response deleteById(Integer researcherid) {
-		try {
+	public Response deleteById(Integer researcherid) throws SQLException {
+	
 		      Connection con = connection.getConnection();
 		      if (con == null) return Response
 		        .status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -157,12 +144,7 @@ public class ResearcherService {
 		      preparedStmt.execute();
 		      con.close();
 
-		    } catch (Exception e) {
-		      return Response
-		        .status(Response.Status.INTERNAL_SERVER_ERROR)
-		        .entity(e)
-		        .build();
-		    }
+		
 
 		    return Response
 		      .status(Response.Status.OK)
@@ -170,13 +152,13 @@ public class ResearcherService {
 		      .build();
 	}
 
-	public Response getResearcherWithCat(Integer researcherid) {
+	public Response getResearcherWithCat(Integer researcherid) throws SQLException {
 		Researcher researcher = null;
 		Category category = null;
 		Map < String, Object > res = new HashMap < String, Object > ();
 		int researchCategory = -99;
 
-	    try {
+	
 	      Connection con = connection.getConnection();
 	      if (con == null) return Response
 	        .status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -224,12 +206,7 @@ public class ResearcherService {
 	      res.put("category", category);
 	      con.close();
 
-	    } catch (Exception e) {
-	      return Response
-	        .status(Response.Status.INTERNAL_SERVER_ERROR)
-	        .entity(e)
-	        .build();
-	    }
+	 
 
 	    return Response
 	      .status(Response.Status.OK)
@@ -237,7 +214,7 @@ public class ResearcherService {
 	      .build();
 	}
 
-	public Response getResearcherWithCatAll() {
+	public Response getResearcherWithCatAll() throws SQLException {
 		Researcher researcher = null;
 		Category category = null;
 		List<Map < String, Object >> finalResul = new ArrayList<>();
@@ -245,7 +222,7 @@ public class ResearcherService {
 		Map < String, Object > res = new HashMap < String, Object > ();
 		int researchCategory = -99;
 
-	    try {
+	
 	      Connection con = connection.getConnection();
 	      if (con == null) return Response
 	        .status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -295,22 +272,14 @@ public class ResearcherService {
 	      
 	      con.close();
 
-	    } catch (Exception e) {
-	      return Response
-	        .status(Response.Status.INTERNAL_SERVER_ERROR)
-	        .entity(e)
-	        .build();
-	    }
-
 	    return Response
 	      .status(Response.Status.OK)
 	      .entity(finalResul)
 	      .build();
 	}
 
-	public Response updateResearcher(Researcher researcher) {
-		try
-		  {
+	public Response updateResearcher(HashMap<String, ?> researcherData, Integer researcherid) throws SQLException {
+	
 			  Connection con = connection.getConnection();
 		      if (con == null) return Response
 		        .status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -320,28 +289,142 @@ public class ResearcherService {
 		  String query = "UPDATE researcher SET name=?,email=?,password=?,updatedAt=CURRENT_TIMESTAMP,researchCategory=? WHERE id=?";
 		  PreparedStatement preparedStmt = con.prepareStatement(query);
 		 
-		  preparedStmt.setString(1, researcher.getName());
-		  preparedStmt.setString(2, researcher.getEmail());
-		  preparedStmt.setString(3, researcher.getPassword());
-		  preparedStmt.setInt(4, researcher.getResearchCategory());
-		  preparedStmt.setInt(5, researcher.getId());
+		  preparedStmt.setString(1, (String) researcherData.get("name"));
+		  preparedStmt.setString(2, (String) researcherData.get("email"));
+		  preparedStmt.setString(3, (String) researcherData.get("password"));
+		  preparedStmt.setInt(4, (new Long((long) researcherData.get("researchCategory"))).intValue());
+		  preparedStmt.setInt(5, researcherid);
 		  
 		  preparedStmt.execute();
 		  con.close();
-		  researcher.setUpdatedAt("A few seconds ago");
-		  }
-		  catch (Exception e)
-		  {
-			  return Response
-				        .status(Response.Status.INTERNAL_SERVER_ERROR)
-				        .entity("Error while updating the item")
-				        .build();
-		  }
+
 		  
 		  return Response
 			      .status(Response.Status.CREATED)
-			      .entity(researcher)
+			      .entity("Researcher updated")
 			      .build();
+	}
+
+	public Response login(String email, String password) throws SQLException {
+		String currentPassword = "";
+	    
+	      Connection con = connection.getConnection();
+	      if (con == null) return Response
+	        .status(Response.Status.INTERNAL_SERVER_ERROR)
+	        .entity("DataBase connectivity Error")
+	        .build();
+
+	      String query = "select * from researcher where email = '"+ email +"'";
+	      Statement stmt = con.createStatement();
+	      ResultSet rs = stmt.executeQuery(query);
+
+	      while (rs.next()) {
+	         currentPassword = rs.getString("password");
+	      }
+ 
+	      
+	      if(!currentPassword.equals(password)) {
+	    	  return Response
+	    		        .status(Response.Status.FORBIDDEN)
+	    		        .entity("Invalid credetials")
+	    		        .build();
+	      }else {
+	    	  Random rand = new Random();
+	    	  double int_random = rand.nextDouble() * 6543793F; 
+	    	  
+	    	  String createToken = "UPDATE researcher SET token = ?,updatedAt=CURRENT_TIMESTAMP WHERE email=?";
+	    	  PreparedStatement preparedStmt = con.prepareStatement(createToken);
+	    	 
+	    	  preparedStmt.setString(1, String.valueOf(int_random));
+	    	  preparedStmt.setString(2, email);
+
+	    	  preparedStmt.execute();
+	    	  con.close();
+	    	  
+	    	  Map<String, String> tokenResult = new HashMap<String, String>(); 
+	    	  tokenResult.put("token",  String.valueOf(int_random)+email);
+	    	  tokenResult.put("metadata",  "Add email and token in seperate headers when making requests.");
+	    	  
+	    	  return Response
+	    		        .status(Response.Status.OK)
+	    		        .entity(tokenResult)
+	    		        .build(); 
+	      }
+	     
+	}
+
+	public Response vertify(String email, String token) throws SQLException {
+		String tokenFromDB = "";
+	    
+	      Connection con = connection.getConnection();
+	      if (con == null) return Response
+	        .status(Response.Status.FORBIDDEN)
+	        .entity("DataBase connectivity Error")
+	        .build();
+
+	      String query = "select * from researcher where email = '"+ email +"'";
+	      Statement stmt = con.createStatement();
+	      ResultSet rs = stmt.executeQuery(query);
+
+	      while (rs.next()) {
+	    	  tokenFromDB = rs.getString("token");
+	      }
+ 
+	      if(tokenFromDB.equals(token)) {
+	    	  return Response
+	    		        .status(Response.Status.OK)
+	    		        .entity("authenticated")
+	    		        .build(); 
+	      }else {
+	    	  return Response
+	    		        .status(Response.Status.FORBIDDEN)
+	    		        .entity("Invalid token")
+	    		        .build();
+	      }
+
+	}
+
+	public Response logout(String email, String token) throws SQLException {
+		  String currentToken = "";
+	    
+	      Connection con = connection.getConnection();
+	      if (con == null) return Response
+	        .status(Response.Status.INTERNAL_SERVER_ERROR)
+	        .entity("DataBase connectivity Error")
+	        .build();
+
+	      String query = "select * from researcher where email = '"+ email +"'";
+	      Statement stmt = con.createStatement();
+	      ResultSet rs = stmt.executeQuery(query);
+
+	      while (rs.next()) {
+	         currentToken = rs.getString("token");
+	      }
+ 
+	      
+	      if(!currentToken.equals(token)) {
+	    	  return Response
+	    		        .status(Response.Status.FORBIDDEN)
+	    		        .entity("Invalid credetials")
+	    		        .build();
+	      }else {	  
+	    	  String createToken = "UPDATE researcher SET token = ?,updatedAt=CURRENT_TIMESTAMP WHERE email=?";
+	    	  PreparedStatement preparedStmt = con.prepareStatement(createToken);
+	    	 
+	    	  preparedStmt.setString(1, null);
+	    	  preparedStmt.setString(2, email);
+
+	    	  preparedStmt.execute();
+	    	  con.close();
+	    	  
+	    	  Map<String, String> tokenResult = new HashMap<String, String>(); 
+	    	  tokenResult.put("status",  "logout succesfully");
+	    	  
+	    	  return Response
+	    		        .status(Response.Status.OK)
+	    		        .entity(tokenResult)
+	    		        .build(); 
+	      }
 	}
 
 }

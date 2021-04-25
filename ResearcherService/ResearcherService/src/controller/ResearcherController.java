@@ -1,5 +1,6 @@
 package controller;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 
 import javax.ws.rs.Consumes;
@@ -22,13 +23,12 @@ import service.ResearcherService;
 */
 @Path("/researcher") 
 public class ResearcherController {
-	private Researcher researcher;
 	private ResearcherService researcherService = new ResearcherService();
 	
 	@GET
 	@Path("/getresearchers")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getAllResearchers() {
+	public Response getAllResearchers() throws SQLException {
 		return researcherService.getAllResearchers();
 	}
 	
@@ -36,7 +36,7 @@ public class ResearcherController {
 	@Path("/getresearcher/{researcherid}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getResearcherById(@PathParam("researcherid") Integer researcherid) {
+	public Response getResearcherById(@PathParam("researcherid") Integer researcherid) throws SQLException {
 		return researcherService.getResearcherById(researcherid);
 	}
 	
@@ -44,7 +44,7 @@ public class ResearcherController {
 	@Path("/deletebyid/{researcherid}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteById(@PathParam("researcherid") Integer researcherid) {
+	public Response deleteById(@PathParam("researcherid") Integer researcherid) throws SQLException {
 		return researcherService.deleteById(researcherid);
 	}
 	
@@ -52,39 +52,23 @@ public class ResearcherController {
 	@Path("/update/{researcherid}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateResearcher(HashMap<String, ?> researcherData, @PathParam("researcherid") Integer researcherid) {
-		String name = (String) researcherData.get("name");
-		String email = (String) researcherData.get("email");
-		String password = (String) researcherData.get("password");
-		Long researchCategoryTemp = new Long((long) researcherData.get("researchCategory"));
-		int researchCategory = researchCategoryTemp.intValue();	
-		
-		researcher = new Researcher(name, email, password, researchCategory);
-		researcher.setId(researcherid);
-		return researcherService.updateResearcher(researcher);
+	public Response updateResearcher(HashMap<String, ?> researcherData, @PathParam("researcherid") Integer researcherid) throws SQLException {
+		return researcherService.updateResearcher(researcherData, researcherid);
 	}
 	
 	@POST
 	@Path("/register")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response addResearcher(HashMap<String, ?> researcherData) {
-		String name = (String) researcherData.get("name");
-		String email = (String) researcherData.get("email");
-		String password = (String) researcherData.get("password");
-		Long researchCategoryTemp = new Long((long) researcherData.get("researchCategory"));
-		int researchCategory = researchCategoryTemp.intValue();	
-		
-		researcher = new Researcher(name, email, password, researchCategory);
-		
-		return researcherService.addResearcher(researcher);
+	public Response addResearcher(HashMap<String, ?> researcherData) throws SQLException {
+		return researcherService.addResearcher(researcherData);
 	}
 	
 	@GET
 	@Path("/getresearchercat/{researcherid}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getResearcherWithCat(@PathParam("researcherid") Integer researcherid) {
+	public Response getResearcherWithCat(@PathParam("researcherid") Integer researcherid) throws SQLException {
 		return researcherService.getResearcherWithCat(researcherid);
 	}
 
@@ -93,8 +77,37 @@ public class ResearcherController {
 	@Path("/getresearchercat/all")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getResearcherWithCatAll() {
+	public Response getResearcherWithCatAll() throws SQLException {
 		return researcherService.getResearcherWithCatAll();
 	}
 	
+	@POST
+	@Path("/login")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response login(HashMap<String, ?> Data) throws SQLException {
+		String email = (String) Data.get("email");
+		String password = (String) Data.get("password");
+		return researcherService.login(email, password);
+	}
+	
+	@POST
+	@Path("/researchertokenvertify")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response researcherTokenVertify(HashMap<String, ?> Data) throws SQLException {
+		String token = (String) Data.get("token");
+		String email = (String) Data.get("email");
+		return researcherService.vertify(email, token);
+	}
+	
+	@POST
+	@Path("/logout")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response logout(HashMap<String, ?> Data) throws SQLException {
+		String email = (String) Data.get("email");
+		String token = (String) Data.get("token");
+		return researcherService.logout(email, token);
+	}
 }
