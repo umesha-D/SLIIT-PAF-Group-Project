@@ -41,6 +41,23 @@ public class ProductController {
 		return productService.addProduct(product);
 	}
 	
+	@PUT
+	@Path("/update/{productid}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response updateCategory(HashMap<String, ?> productData, @PathParam("productid") Integer productid) {
+		String productName = (String) productData.get("productName");
+		
+		Long productPrice = new Long((long) productData.get("productPrice"));
+
+		product = new Product();
+		product.setId(productid);
+		product.setProductName(productName);
+		product.setProductPrice(productPrice);
+		return productService.updateProduct(product);
+
+	}
+	
 	@GET
 	@Path("/getproducts")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -83,11 +100,11 @@ public class ProductController {
 	}
 	
 	@GET
-	@Path("/getproductswithbuyer")
+	@Path("/getproductswithdata")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getProductsWithBuyer() {
-		return productService.getProductsWithBuyer();
+	public Response getProductsWithData() {
+		return productService.getProductsWithData();
 	}
-
+	
 }

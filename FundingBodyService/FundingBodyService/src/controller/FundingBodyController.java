@@ -7,6 +7,12 @@ import javax.ws.rs.core.Response;
 import model.FundingBody;
 import service.FundingBodyService;
 
+/*
+ *default Port : 8282 
+ *http://localhost:8282/FundingBodyService/api/v2/fbody/*
+*/
+
+
 
 @Path("/fbody") 
 public class FundingBodyController {
@@ -14,17 +20,19 @@ public class FundingBodyController {
 	private FundingBody fundingBody;
 	private FundingBodyService fundingBodyService = new FundingBodyService();
 	
+	
 	@POST
 	@Path("/register")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response register(HashMap<String, ?> buyerData) {
-		String userName = (String) buyerData.get("userName");
-		String password = (String) buyerData.get("password");
-		String email = (String) buyerData.get("email");
+	public Response register(HashMap<String, ?> fbodyData) {
+		String userName = (String) fbodyData.get("userName");
+		String password = (String) fbodyData.get("password");
+		String email = (String) fbodyData.get("email");
 		FundingBody fundingBody  = new FundingBody(userName, password, email);
 		return fundingBodyService.register(fundingBody);
 	}
+	
 	
 	
 	@GET
@@ -45,6 +53,7 @@ public class FundingBodyController {
 	}
 	
 	
+	
 	@PUT
 	@Path("/update/{fbodyidId}")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -61,7 +70,7 @@ public class FundingBodyController {
 	
 	
 	@DELETE
-	@Path("/deletebyid/{fbodyidId}" )
+	@Path("/deletebyid/{fbodyidId}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteById(@PathParam("fbodyidId") Integer fbodyidId) {

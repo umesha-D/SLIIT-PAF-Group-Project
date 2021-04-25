@@ -16,6 +16,8 @@ public class FundingBodyService {
 
   private DBConnection connection = new DBConnection();
 
+// Add Funding Body
+
   public Response register(FundingBody fundingBody) {
     try {
       Connection con = connection.getConnection();
@@ -23,8 +25,6 @@ public class FundingBodyService {
         .status(Response.Status.INTERNAL_SERVER_ERROR)
         .entity("Database connectivity Error")
         .build();
-		
-		
 
       String query = "INSERT INTO fbody(userName,password, email) VALUES (?, ?, ?)";
       PreparedStatement preparedStmt = con.prepareStatement(query);
@@ -40,7 +40,7 @@ public class FundingBodyService {
     } catch (Exception e) {
       return Response
         .status(Response.Status.INTERNAL_SERVER_ERROR)
-        .entity("Error while inserting data")
+        .entity("Error when inserting fBody")
         .build();
     }
     return Response
@@ -50,7 +50,7 @@ public class FundingBodyService {
   
 }
 
-
+// Get All Funding Bodies
 
 public Response getAllfbodies() {
     List <FundingBody> fundingBody = new ArrayList <FundingBody> ();
@@ -93,7 +93,7 @@ public Response getAllfbodies() {
 
   }
   
-  
+ //Get Funding Body By ID
 
   public Response getFBodyById(int fbodyId) {
     FundingBody fundingBody = null;
@@ -137,7 +137,7 @@ public Response getAllfbodies() {
 
   }
   
-  
+  //Update Funding Body
   
   public Response updateFundingBody(FundingBody fundingBody) {
 	  try
@@ -164,7 +164,7 @@ public Response getAllfbodies() {
 	  {
 		  return Response
 			        .status(Response.Status.INTERNAL_SERVER_ERROR)
-			        .entity("Error while updating the item")
+			        .entity("Error when updating the fBody")
 			        .build();
 	  }
 	  
@@ -174,7 +174,7 @@ public Response getAllfbodies() {
 		      .build();
   }
   
-  
+  // Delete Funding Body
   
   public Response deleteFBody(int userId) {
 	  try
@@ -198,7 +198,7 @@ public Response getAllfbodies() {
 	  {
 		  return Response
 			        .status(Response.Status.INTERNAL_SERVER_ERROR)
-			        .entity("Error while updating the item")
+			        .entity("Error when deleting the fBody")
 			        .build();
 	  }
 	  
@@ -207,6 +207,7 @@ public Response getAllfbodies() {
 		      .entity("Succesfully Deleted the funding body")
 		      .build();
   }
+  
   
   
 }

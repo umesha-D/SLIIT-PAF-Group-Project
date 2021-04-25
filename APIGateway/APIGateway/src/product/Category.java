@@ -163,7 +163,11 @@ public class Category {
 	        Client client = Client.create();
 
 	        WebResource webResource = client
+<<<<<<< HEAD
 	          .resource("http://localhost:8180/ProductService/api/v2/category/deletebyid"+categoryid);
+=======
+	          .resource("http://localhost:8180/ProductService/api/v2/category/"+categoryid);
+>>>>>>> b89e1ab6e6c7003368121754fa21839e60eed5a0
 
 	        ClientResponse response = webResource.accept("application/json")
 	          .delete(ClientResponse.class);

@@ -274,11 +274,12 @@ public class ProductService {
 	      .build();
 	}
 
-	public Response getProductsWithBuyer() {
+	public Response getProductsWithData() {
 		
 	    List<Map < String, Object >> result = new ArrayList<Map<String,Object>>();
-
-
+	    List<?> resultData = new ArrayList<>();
+	    List<?> resultDataResearcher = new ArrayList<>();
+	    
 	    try {
 	      Connection con = connection.getConnection();
 	      if (con == null) return Response
@@ -289,6 +290,37 @@ public class ProductService {
 	      String query = "select * from product";
 	      Statement stmt = con.createStatement();
 	      ResultSet rs = stmt.executeQuery(query);
+	      
+	      Client client = Client.create();
+	      WebResource webResource = client
+		          .resource("http://localhost:8080/BuyerService/api/v2/buyer/getbuyers/");
+
+		        ClientResponse response = webResource.accept("application/json")
+		          .get(ClientResponse.class);
+
+		        if (response.getStatus() != 200) {
+		          throw new RuntimeException("Failed : HTTP error code : " +
+		            response.getStatus());
+		        }
+
+		  Object output = response.getEntity(Object.class);
+		  resultData = (List<?>)output;
+		  
+	      WebResource webResource2 = client
+		          .resource("http://localhost:8090/ResearcherService/api/v2/researcher/getresearchers");
+
+		        ClientResponse response2 = webResource2.accept("application/json")
+		          .get(ClientResponse.class);
+
+		        if (response2.getStatus() != 200) {
+		          throw new RuntimeException("Failed : HTTP error code : " +
+		            response.getStatus());
+		        }
+
+		  Object output2 = response2.getEntity(Object.class);
+		  resultDataResearcher = (List<?>)output2;
+		  
+	      
 
 	      while (rs.next()) {
 	    	    int id = rs.getInt("id");
@@ -309,27 +341,30 @@ public class ProductService {
 		        Map < String, Object > res = new HashMap < String, Object > ();
 		        res.put("pruduct", product);
 		        
-		        Client client = Client.create();
-
-		        WebResource webResource = client
-		          .resource("http://localhost:8080/BuyerService/api/v2/buyer/getbuyerbyid/" + buyer_id);
-
-		        ClientResponse response = webResource.accept("application/json")
-		          .get(ClientResponse.class);
-
-		        if (response.getStatus() != 200) {
-		          throw new RuntimeException("Failed : HTTP error code : " +
-		            response.getStatus());
+		        resultData
+		        	.stream()
+		        	.forEach(data -> {
+		        		HashMap<String, ?> x = (HashMap<String, ?>) data;
+		        		if(((int)(long)(x.get("id"))) == buyer_id) {
+		        			res.put("buyer", data);
+		        		}
+		        	});
+		        	
+		        if(!res.containsKey("buyer")) {
+		        	res.put("buyer", null);
 		        }
-
-		        Object output = response.getEntity(Object.class);
-		        res.put("buyer", output);
+		        
+		        resultDataResearcher
+	        	.stream()
+	        	.forEach(data -> {
+	        		HashMap<String, ?> x = (HashMap<String, ?>) data;
+	        		if(((int)(long)(x.get("id"))) == owner_id) {
+	        			res.put("owner", data);
+	        		}
+	        	});
+	        	
 		        result.add(res);
 	      }
-
-	
-
-
 	      con.close();
 
 	    } catch (Exception e) {
@@ -342,6 +377,39 @@ public class ProductService {
 	      .status(Response.Status.OK)
 	      .entity(result)
 	      .build();
+	}
+
+	public Response updateProduct(Product product) {
+		try
+		  {
+			  Connection con = connection.getConnection();
+		      if (con == null) return Response
+		        .status(Response.Status.INTERNAL_SERVER_ERROR)
+		        .entity("DataBase connectivity Error")
+		        .build();
+		  
+		  String query = "UPDATE product SET product_name=?,product_price=?,updated_at=CURRENT_TIMESTAMP WHERE id=?";
+		  PreparedStatement preparedStmt = con.prepareStatement(query);
+		 
+		  preparedStmt.setString(1, product.getProductName());
+		  preparedStmt.setDouble(2, product.getProductPrice());
+		  preparedStmt.setInt(3, product.getId());
+		  
+		  preparedStmt.execute();
+		  con.close();
+		  }
+		  catch (Exception e)
+		  {
+			  return Response
+				        .status(Response.Status.INTERNAL_SERVER_ERROR)
+				        .entity("Error while updating the item")
+				        .build();
+		  }
+		  
+		  return Response
+			      .status(Response.Status.CREATED)
+			      .entity(product)
+			      .build();
 	}
 
 }

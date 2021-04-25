@@ -9,7 +9,6 @@ public class FundingBody {
 	private String updatedAt;
 	
 	
-	
 	public int getId() {
 		return id;
 	}
@@ -19,8 +18,8 @@ public class FundingBody {
 		this.userName = userName;
 		this.password = password;
 		this.email = email;
-		
 	}
+	
 
 	public void setId(int id) {
 		this.id = id;
@@ -67,11 +66,11 @@ public class FundingBody {
 	}
 	
 	
-	
 	@Override
 	public String toString() {
 		return "Buyer [id=" + id + ", userName=" + userName + ", password=" + password + ", email=" + email
 				+ ", regiteredAt=" + regiteredAt + ", updatedAt=" + updatedAt + "]";
 	}
+	
 
 }

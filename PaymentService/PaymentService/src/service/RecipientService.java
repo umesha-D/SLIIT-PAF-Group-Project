@@ -13,10 +13,11 @@ import model.Payment;
 import model.Recipient;
 import repository.DBConnection;
 
-
-
 public class RecipientService {
+	
 	private DBConnection connection = new DBConnection();
+	
+	//add recipient
 	
 	public Response addRecipient(Recipient recipient) {
 		int insertedId = -99;
@@ -24,7 +25,7 @@ public class RecipientService {
 		      Connection con = connection.getConnection();
 		      if (con == null) return Response
 		        .status(Response.Status.INTERNAL_SERVER_ERROR)
-		        .entity("DataBase connectivity Error")
+		        .entity("Database connectivity Error")
 		        .build();
 
 		      String query = "INSERT INTO recipient(account_number,bank, branch) VALUES (?, ?, ?)";
@@ -55,7 +56,7 @@ public class RecipientService {
 		      .build();
 	}
 	
-	
+	//get recipients
 
 	public Response getRecipients() {
 		List <Recipient> recipients = new ArrayList <Recipient> ();
@@ -99,8 +100,9 @@ public class RecipientService {
       .entity(recipients)
       .build();
 	}
-	
-	
+
+    
+	//get recipient by id
 
 	public Response getRecipientById(Integer recipientid) {
 		Recipient recipient = null;
@@ -142,6 +144,4 @@ public class RecipientService {
 	      .entity(recipient)
 	      .build();
 	}
-	
-	
 }

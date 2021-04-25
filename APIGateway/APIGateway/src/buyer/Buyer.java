@@ -31,6 +31,10 @@ public class Buyer {
 	public boolean validate(String email, String token) {
 		Object output = null;
 		try {
+<<<<<<< HEAD
+=======
+
+>>>>>>> b89e1ab6e6c7003368121754fa21839e60eed5a0
 	        Client client = Client.create();
 
 	        WebResource webResource = client
@@ -171,6 +175,7 @@ public class Buyer {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getBuyers(@Context HttpHeaders httpheaders) {
 		Object output = null;
+<<<<<<< HEAD
 		List<String> token = httpheaders.getRequestHeader("token");
 		List<String> email = httpheaders.getRequestHeader("email");
 		if(token == null || email == null) {
@@ -187,6 +192,24 @@ public class Buyer {
     		        .entity("Unauthrized access")
     		        .build();
 		}
+=======
+//		List<String> token = httpheaders.getRequestHeader("token");
+//		List<String> email = httpheaders.getRequestHeader("email");
+//		if(token == null || email == null) {
+//			return Response
+//    		        .status(Response.Status.FORBIDDEN)
+//    		        .entity("No token provided")
+//    		        .build();
+//		}
+//		boolean isValid = validate(email.get(0),token.get(0));
+//		
+//		if(!isValid) {
+//			return Response
+//    		        .status(Response.Status.FORBIDDEN)
+//    		        .entity("Unauthrized access")
+//    		        .build();
+//		}
+>>>>>>> b89e1ab6e6c7003368121754fa21839e60eed5a0
 		try {
 
 	        Client client = Client.create();

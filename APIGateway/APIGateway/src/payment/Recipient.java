@@ -19,6 +19,11 @@ import com.sun.jersey.api.client.WebResource;
  *default Port : 8682 
  *http://localhost:8682/APIGateway/api/v2/recipient/*
 */
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> b89e1ab6e6c7003368121754fa21839e60eed5a0
 @Path("/recipient") 
 public class Recipient {
 	@POST
@@ -117,4 +122,9 @@ public class Recipient {
 			        .entity(output)
 			        .build();
 	}
+<<<<<<< HEAD
+=======
+	
+	
+>>>>>>> b89e1ab6e6c7003368121754fa21839e60eed5a0
 }
