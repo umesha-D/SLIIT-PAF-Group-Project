@@ -149,7 +149,7 @@ public class CategoryService {
 
 		    return Response
 		      .status(Response.Status.OK)
-		      .entity("Succesfully Delected the payment data")
+		      .entity("Product Category deleted successfully")
 		      .build();
 	}
 
