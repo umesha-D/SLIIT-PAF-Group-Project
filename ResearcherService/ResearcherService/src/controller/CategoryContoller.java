@@ -22,7 +22,6 @@ import service.CategoryService;
 */
 @Path("/category") 
 public class CategoryContoller {
-	private Category category;
 	private CategoryService categoryService = new CategoryService();
 	
 	@POST
@@ -30,10 +29,7 @@ public class CategoryContoller {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addCategory(HashMap<String, ?> categoryData) {
-		String categoryName = (String) categoryData.get("categoryName");
-		String description = (String) categoryData.get("description");
-	    category = new Category(categoryName, description);
-		return categoryService.addCategory(category);
+		return categoryService.addCategory(categoryData);
 	}
 	
 	@PUT
@@ -41,12 +37,7 @@ public class CategoryContoller {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response updateCategory(HashMap<String, ?> categoryData, @PathParam("categoryid") Integer categoryid) {
-		String categoryName = (String) categoryData.get("categoryName");
-		String description = (String) categoryData.get("description");
-	    category = new Category(categoryName, description);
-	    category.setId(categoryid);
-	    
-		return categoryService.updateCategory(category);
+		return categoryService.updateCategory(categoryData,categoryid);
 	}
 	
 	@GET

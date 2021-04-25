@@ -8,6 +8,7 @@ public class Researcher {
 	private String createdAt;
 	private String updatedAt;
 	private int researchCategory;
+	private String token;
 	
 	public Researcher() {
 		super();
@@ -77,10 +78,20 @@ public class Researcher {
 		this.researchCategory = researchCategory;
 	}
 
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
 	@Override
 	public String toString() {
 		return "Researcher [id=" + id + ", name=" + name + ", email=" + email + ", password=" + password
 				+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", researchCategory=" + researchCategory
-				+ "]";
+				+ ", token=" + token + "]";
 	}
+
+	
 }

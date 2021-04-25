@@ -1,10 +1,17 @@
-package researcher;
+package fundingbody;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -16,10 +23,10 @@ import com.sun.jersey.api.client.WebResource;
 
 /*
  *default Port : 8682 
- *http://localhost:8682/APIGateway/api/v2/researcher/*
+ *http://localhost:8682/APIGateway/api/v2/fbody/*
 */
-@Path("/researcher") 
-public class Researcher {
+@Path("/fbody") 
+public class FundingBody {
 	
 	public boolean validate(String email, String token) {
 		Object output = null;
@@ -28,7 +35,7 @@ public class Researcher {
 	        Client client = Client.create();
 
 	        WebResource webResource = client
-	          .resource("http://localhost:8082/AuthenticationService/api/v2/auth/researchertokenvertify");
+	          .resource("http://localhost:8082/AuthenticationService/api/v2/auth/fbodytokenvertify");
 
 	        ClientResponse response = webResource.accept("application/json")
 	        	.header("token", token)
@@ -61,7 +68,7 @@ public class Researcher {
 	        Client client = Client.create();
 
 	        WebResource webResource = client
-	          .resource("http://localhost:8082/AuthenticationService/api/v2/auth/researcherlogin");
+	          .resource("http://localhost:8082/AuthenticationService/api/v2/auth/fbodylogin");
 
 	        ClientResponse response = webResource.accept("application/json")
 	          .post(ClientResponse.class, Data);
@@ -96,22 +103,22 @@ public class Researcher {
     		        .entity("No token provided")
     		        .build();
 		}
-		boolean isValid = validate(email.get(0),token.get(0));
-		Data.put("email", email.get(0));
-		Data.put("token", token.get(0));
 		
+		boolean isValid = validate(email.get(0),token.get(0));
 		if(!isValid) {
 			return Response
     		        .status(Response.Status.FORBIDDEN)
     		        .entity("Unauthrized access")
     		        .build();
 		}
+		
+		
 		try {
 
 	        Client client = Client.create();
 
 	        WebResource webResource = client
-	          .resource("http://localhost:8082/AuthenticationService/api/v2/auth/researcherlogout");
+	          .resource("http://localhost:8082/AuthenticationService/api/v2/auth/fbodylogout");
 
 	        ClientResponse response = webResource.accept("application/json")
 	          .post(ClientResponse.class, Data);
@@ -129,23 +136,22 @@ public class Researcher {
 			        .entity(output)
 			        .build();
 	}
-
 	
 	@POST
 	@Path("/register")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response addResearcher(HashMap<String, ?> researcherData) {
+	public Response register(HashMap<String, ?> fbodyData) {
 		Object output = null;
 		try {
 
 	        Client client = Client.create();
 
 	        WebResource webResource = client
-	          .resource("http://localhost:8090/ResearcherService/api/v2/researcher/register/");
+	          .resource("http://localhost:8282/FundingBodyService/api/v2/fbody/register");
 
 	        ClientResponse response = webResource.accept("application/json")
-	          .post(ClientResponse.class, researcherData);
+	          .post(ClientResponse.class, fbodyData);
 
 	        output = response.getEntity(Object.class);
 
@@ -161,16 +167,13 @@ public class Researcher {
 			        .build();
 	}
 	
-	
 	@GET
-	@Path("/getall")
+	@Path("/getfbodys")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getResearchers(@Context HttpHeaders httpheaders) {
+	public Response getAllfbodies(@Context HttpHeaders httpheaders) {
 		Object output = null;
 		List<String> token = httpheaders.getRequestHeader("token");
 		List<String> email = httpheaders.getRequestHeader("email");
-		Map<String, Object> Data = new HashMap<String, Object>();
-
 		if(token == null || email == null) {
 			return Response
     		        .status(Response.Status.FORBIDDEN)
@@ -178,8 +181,6 @@ public class Researcher {
     		        .build();
 		}
 		boolean isValid = validate(email.get(0),token.get(0));
-		Data.put("email", email.get(0));
-		Data.put("token", token.get(0));
 		
 		if(!isValid) {
 			return Response
@@ -187,13 +188,12 @@ public class Researcher {
     		        .entity("Unauthrized access")
     		        .build();
 		}
-
 		try {
 
 	        Client client = Client.create();
 
 	        WebResource webResource = client
-	          .resource("http://localhost:8090/ResearcherService/api/v2/researcher/getresearchers/");
+	          .resource("http://localhost:8282/FundingBodyService/api/v2/fbody/getfbodys");
 
 	        ClientResponse response = webResource.accept("application/json")
 	          .get(ClientResponse.class);
@@ -217,15 +217,13 @@ public class Researcher {
 	}
 	
 	@GET
-	@Path("/getresearcher/{researcherid}")
+	@Path("/getfbodybyid/{fbodyidId}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getResearcherById(@PathParam("researcherid") Integer researcherid, @Context HttpHeaders httpheaders) {
+	public Response getFBodyById(@PathParam("fbodyidId") Integer fbodyidId, @Context HttpHeaders httpheaders) {
 		Object output = null;
 		List<String> token = httpheaders.getRequestHeader("token");
 		List<String> email = httpheaders.getRequestHeader("email");
-		Map<String, Object> Data = new HashMap<String, Object>();
-
 		if(token == null || email == null) {
 			return Response
     		        .status(Response.Status.FORBIDDEN)
@@ -233,8 +231,6 @@ public class Researcher {
     		        .build();
 		}
 		boolean isValid = validate(email.get(0),token.get(0));
-		Data.put("email", email.get(0));
-		Data.put("token", token.get(0));
 		
 		if(!isValid) {
 			return Response
@@ -247,133 +243,7 @@ public class Researcher {
 	        Client client = Client.create();
 
 	        WebResource webResource = client
-	          .resource("http://localhost:8090/ResearcherService/api/v2/researcher/getresearcher/"+researcherid);
-
-	        ClientResponse response = webResource.accept("application/json")
-	          .get(ClientResponse.class);
-
-	        if (response.getStatus() != 200) {
-	          throw new RuntimeException("Failed : HTTP error code : " +
-	            response.getStatus());
-	        }
-	        output = response.getEntity(Object.class);
-
-	      } catch (Exception e) {
-	    	  return Response
-	    		        .status(Response.Status.INTERNAL_SERVER_ERROR)
-	    		        .entity(e)
-	    		        .build();
-	      }
-			return Response
-			        .status(Response.Status.OK)
-			        .entity(output)
-			        .build();
-	}
-	
-	
-	@DELETE
-	@Path("/deletebyid/{researcherid}")
-	@Consumes(MediaType.TEXT_PLAIN)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteById(@PathParam("researcherid") Integer researcherid, @Context HttpHeaders httpheaders) {
-		Object output = null;
-		List<String> token = httpheaders.getRequestHeader("token");
-		List<String> email = httpheaders.getRequestHeader("email");
-		Map<String, Object> Data = new HashMap<String, Object>();
-
-		if(token == null || email == null) {
-			return Response
-    		        .status(Response.Status.FORBIDDEN)
-    		        .entity("No token provided")
-    		        .build();
-		}
-		boolean isValid = validate(email.get(0),token.get(0));
-		Data.put("email", email.get(0));
-		Data.put("token", token.get(0));
-		
-		if(!isValid) {
-			return Response
-    		        .status(Response.Status.FORBIDDEN)
-    		        .entity("Unauthrized access")
-    		        .build();
-		}
-
-		try {
-
-	        Client client = Client.create();
-
-	        WebResource webResource = client
-	          .resource("http://localhost:8090/ResearcherService/api/v2/researcher/deletebyid/"+researcherid);
-
-	        ClientResponse response = webResource.accept("application/json")
-	          .delete(ClientResponse.class);
-
-	        if (response.getStatus() != 200) {
-	          throw new RuntimeException("Failed : HTTP error code : " +
-	            response.getStatus());
-	        }
-	        output = response.getEntity(Object.class);
-
-	      } catch (Exception e) {
-	    	  return Response
-	    		        .status(Response.Status.INTERNAL_SERVER_ERROR)
-	    		        .entity(e)
-	    		        .build();
-	      }
-			return Response
-			        .status(Response.Status.OK)
-			        .entity(output)
-			        .build();
-	}
-	
-	
-	@GET
-	@Path("/getresearchercat/{researcherid}")
-	@Consumes(MediaType.TEXT_PLAIN)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getResearcherWithCat(@PathParam("researcherid") Integer researcherid) {
-		Object output = null;
-		try {
-
-	        Client client = Client.create();
-
-	        WebResource webResource = client
-	          .resource("http://localhost:8090/ResearcherService/api/v2/researcher/getresearchercat/"+researcherid);
-
-	        ClientResponse response = webResource.accept("application/json")
-	          .get(ClientResponse.class);
-
-	        if (response.getStatus() != 200) {
-	          throw new RuntimeException("Failed : HTTP error code : " +
-	            response.getStatus());
-	        }
-	        output = response.getEntity(Object.class);
-
-	      } catch (Exception e) {
-	    	  return Response
-	    		        .status(Response.Status.INTERNAL_SERVER_ERROR)
-	    		        .entity(e)
-	    		        .build();
-	      }
-			return Response
-			        .status(Response.Status.OK)
-			        .entity(output)
-			        .build();
-	}
-
-	
-	@GET
-	@Path("/getresearchercat/all")
-	@Consumes(MediaType.TEXT_PLAIN)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getResearcherWithCatAll() {
-		Object output = null;
-		try {
-
-	        Client client = Client.create();
-
-	        WebResource webResource = client
-	          .resource("http://localhost:8090/ResearcherService/api/v2/researcher/getresearchercat/all");
+	          .resource("http://localhost:8282/FundingBodyService/api/v2/fbody/getfbodybyid/"+fbodyidId);
 
 	        ClientResponse response = webResource.accept("application/json")
 	          .get(ClientResponse.class);
@@ -398,43 +268,141 @@ public class Researcher {
 	
 	
 	@PUT
-	@Path("/update/{researcherid}")
+	@Path("/update/{fbodyidId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateResearcher(HashMap<String, ?> researcherData, @PathParam("researcherid") Integer researcherid, @Context HttpHeaders httpheaders) {
+	public Response updateBuyer(HashMap<String, ?> fbodyData, @PathParam("fbodyidId") Integer fbodyidId, @Context HttpHeaders httpheaders) {
 		Object output = null;
 		List<String> token = httpheaders.getRequestHeader("token");
 		List<String> email = httpheaders.getRequestHeader("email");
-		Map<String, Object> Data = new HashMap<String, Object>();
-
 		if(token == null || email == null) {
 			return Response
     		        .status(Response.Status.FORBIDDEN)
     		        .entity("No token provided")
     		        .build();
 		}
-		boolean isValid = validate(email.get(0),token.get(0));
-		Data.put("email", email.get(0));
-		Data.put("token", token.get(0));
 		
+		boolean isValid = validate(email.get(0),token.get(0));
 		if(!isValid) {
 			return Response
     		        .status(Response.Status.FORBIDDEN)
     		        .entity("Unauthrized access")
     		        .build();
 		}
-
+		
 		try {
 
 	        Client client = Client.create();
 
 	        WebResource webResource = client
-	          .resource("http://localhost:8090/ResearcherService/api/v2/researcher/update/"+researcherid);
+	          .resource("http://localhost:8282/FundingBodyService/api/v2/fbody/update"+fbodyidId);
 
 	        ClientResponse response = webResource.accept("application/json")
-	          .put(ClientResponse.class, researcherData);
+	          .put(ClientResponse.class, fbodyData);
 
 	       
+	        output = response.getEntity(Object.class);
+
+	      } catch (Exception e) {
+	    	  return Response
+	    		        .status(Response.Status.INTERNAL_SERVER_ERROR)
+	    		        .entity(e)
+	    		        .build();
+	      }
+			return Response
+			        .status(Response.Status.OK)
+			        .entity(output)
+			        .build();
+	
+	}
+	
+	@DELETE
+	@Path("/deletebyid/{fbodyidId}")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteById(@PathParam("fbodyidId") Integer fbodyidId, @Context HttpHeaders httpheaders) {
+		Object output = null;
+		List<String> token = httpheaders.getRequestHeader("token");
+		List<String> email = httpheaders.getRequestHeader("email");
+		if(token == null || email == null) {
+			return Response
+    		        .status(Response.Status.FORBIDDEN)
+    		        .entity("No token provided")
+    		        .build();
+		}
+		
+		boolean isValid = validate(email.get(0),token.get(0));
+		if(!isValid) {
+			return Response
+    		        .status(Response.Status.FORBIDDEN)
+    		        .entity("Unauthrized access")
+    		        .build();
+		}
+		
+		try {
+
+	        Client client = Client.create();
+
+	        WebResource webResource = client
+	          .resource("http://localhost:8282/FundingBodyService/api/v2/fbody/deletebyid"+fbodyidId);
+
+	        ClientResponse response = webResource.accept("application/json")
+	          .delete(ClientResponse.class);
+
+	        if (response.getStatus() != 200) {
+	          throw new RuntimeException("Failed : HTTP error code : " +
+	            response.getStatus());
+	        }
+	        output = response.getEntity(Object.class);
+
+	      } catch (Exception e) {
+	    	  return Response
+	    		        .status(Response.Status.INTERNAL_SERVER_ERROR)
+	    		        .entity(e)
+	    		        .build();
+	      }
+			return Response
+			        .status(Response.Status.OK)
+			        .entity(output)
+			        .build();
+	}
+	
+	@GET
+	@Path("/viewproducts")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getProducts(@Context HttpHeaders httpheaders) {
+		Object output = null;
+		List<String> token = httpheaders.getRequestHeader("token");
+		List<String> email = httpheaders.getRequestHeader("email");
+		if(token == null || email == null) {
+			return Response
+    		        .status(Response.Status.FORBIDDEN)
+    		        .entity("No token provided")
+    		        .build();
+		}
+		
+		boolean isValid = validate(email.get(0),token.get(0));
+		if(!isValid) {
+			return Response
+    		        .status(Response.Status.FORBIDDEN)
+    		        .entity("Unauthrized access")
+    		        .build();
+		}
+		
+		try {
+
+	        Client client = Client.create();
+
+	        WebResource webResource = client
+	          .resource("http://localhost:8180/ProductService/api/v2/product/getproducts");
+
+	        ClientResponse response = webResource.accept("application/json")
+	          .get(ClientResponse.class);
+
+	        if (response.getStatus() != 200) {
+	          throw new RuntimeException("Failed : HTTP error code : " +
+	            response.getStatus());
+	        }
 	        output = response.getEntity(Object.class);
 
 	      } catch (Exception e) {
@@ -450,20 +418,36 @@ public class Researcher {
 	}
 	
 	@POST
-	@Path("/addproduct")
+	@Path("/fundproduct")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response addProduct(HashMap<String, ?> productData) {
+	public Response fundProduct(HashMap<String, ?> fundingbodyData, @Context HttpHeaders httpheaders) {
 		Object output = null;
+		List<String> token = httpheaders.getRequestHeader("token");
+		List<String> email = httpheaders.getRequestHeader("email");
+		if(token == null || email == null) {
+			return Response
+    		        .status(Response.Status.FORBIDDEN)
+    		        .entity("No token provided")
+    		        .build();
+		}
+		
+		boolean isValid = validate(email.get(0),token.get(0));
+		if(!isValid) {
+			return Response
+    		        .status(Response.Status.FORBIDDEN)
+    		        .entity("Unauthrized access")
+    		        .build();
+		}
 		try {
 
 	        Client client = Client.create();
 
 	        WebResource webResource = client
-	          .resource("http://localhost:8180/ProductService/api/v2/product/addproduct");
+	          .resource("http://localhost:8180/ProductService/api/v2/productfunders/addfundingbody");
 
 	        ClientResponse response = webResource.accept("application/json")
-	          .post(ClientResponse.class, productData);
+	          .post(ClientResponse.class, fundingbodyData);
 
 	        output = response.getEntity(Object.class);
 
@@ -478,5 +462,6 @@ public class Researcher {
 			        .entity(output)
 			        .build();
 	}
+	
 	
 }
