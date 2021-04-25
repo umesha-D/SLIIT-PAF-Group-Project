@@ -65,7 +65,7 @@ public class Category {
 	        Client client = Client.create();
 
 	        WebResource webResource = client
-	          .resource("http://localhost:8180/ProductService/api/v2/category/update"+categoryid);
+	          .resource("http://localhost:8180/ProductService/api/v2/category/update/"+categoryid);
 
 	        ClientResponse response = webResource.accept("application/json")
 	          .put(ClientResponse.class, categoryData);
@@ -164,10 +164,14 @@ public class Category {
 
 	        WebResource webResource = client
 <<<<<<< HEAD
+	          .resource("http://localhost:8180/ProductService/api/v2/category/deletebyid/"+categoryid);
+=======
+<<<<<<< HEAD
 	          .resource("http://localhost:8180/ProductService/api/v2/category/deletebyid"+categoryid);
 =======
 	          .resource("http://localhost:8180/ProductService/api/v2/category/"+categoryid);
 >>>>>>> b89e1ab6e6c7003368121754fa21839e60eed5a0
+>>>>>>> 627bcc3d25b61d80d3c8b7af9491e738bffa736e
 
 	        ClientResponse response = webResource.accept("application/json")
 	          .delete(ClientResponse.class);

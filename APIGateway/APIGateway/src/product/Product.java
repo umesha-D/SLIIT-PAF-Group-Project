@@ -159,6 +159,8 @@ public class Product {
 	@GET
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
+=======
 	@Path("/buyproduct/{productId}/{buyerid}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -195,6 +197,7 @@ public class Product {
 	
 	@GET
 >>>>>>> b89e1ab6e6c7003368121754fa21839e60eed5a0
+>>>>>>> 627bcc3d25b61d80d3c8b7af9491e738bffa736e
 	@Path("/getproductwithbuyer/{productid}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -274,7 +277,7 @@ public class Product {
 	        Client client = Client.create();
 
 	        WebResource webResource = client
-	          .resource("http://localhost:8180/ProductService/api/v2/product/update"+productid);
+	          .resource("http://localhost:8180/ProductService/api/v2/product/update/"+productid);
 
 	        ClientResponse response = webResource.accept("application/json")
 	          .put(ClientResponse.class, productData);

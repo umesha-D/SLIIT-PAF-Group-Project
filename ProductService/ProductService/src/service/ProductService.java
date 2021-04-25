@@ -3,6 +3,7 @@ package service;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +27,7 @@ public class ProductService {
 		      Connection con = connection.getConnection();
 		      if (con == null) return Response
 		        .status(Response.Status.INTERNAL_SERVER_ERROR)
-		        .entity("DataBase connectivity Error")
+		        .entity("Database connectivity Error")
 		        .build();
 
 		      String query = "INSERT INTO product(product_name,product_price, owner_id,is_completed, category_id) VALUES (?, ?, ?, ?, ?)";
@@ -37,7 +38,7 @@ public class ProductService {
 		      preparedStmt.setInt(3, product.getOwnerId());
 		      preparedStmt.setBoolean(4, product.isCompleted());
 		      preparedStmt.setInt(5, product.getCategoryId());
-
+		      
 		      preparedStmt.execute();
 		      con.close();
 
@@ -62,7 +63,7 @@ public class ProductService {
 	      Connection con = connection.getConnection();
 	      if (con == null) return Response
 	        .status(Response.Status.INTERNAL_SERVER_ERROR)
-	        .entity("DataBase connectivity Error")
+	        .entity("Database connectivity Error")
 	        .build();
 
 	      String query = "select * from product";
@@ -108,7 +109,7 @@ public class ProductService {
 	      Connection con = connection.getConnection();
 	      if (con == null) return Response
 	        .status(Response.Status.INTERNAL_SERVER_ERROR)
-	        .entity("DataBase connectivity Error")
+	        .entity("Database connectivity Error")
 	        .build();
 
 	      String query = "select * from product where id = " + productid;
@@ -171,7 +172,7 @@ public class ProductService {
 
 		    return Response
 		      .status(Response.Status.OK)
-		      .entity("Succesfully Delected the payment data")
+		      .entity("Product is deleted successfully")
 		      .build();
 	}
 
@@ -198,13 +199,13 @@ public class ProductService {
 		  {
 			  return Response
 				        .status(Response.Status.INTERNAL_SERVER_ERROR)
-				        .entity("Error while updating the item")
+				        .entity("Buying product is failed")
 				        .build();
 		  }
 		  
 		  return Response
 			      .status(Response.Status.CREATED)
-			      .entity("Purchase succesfull")
+			      .entity("Purchase successfull")
 			      .build();
 	}
 
@@ -221,8 +222,8 @@ public class ProductService {
 	        .build();
 
 	      String query = "select * from product where id = " + productid;
-	      Statement stmt = con.createStatement();
-	      ResultSet rs = stmt.executeQuery(query);
+	      Statement statement = con.createStatement();
+	      ResultSet rs = statement.executeQuery(query);
 
 	      while (rs.next()) {
 	    	    int id = rs.getInt("id");
@@ -288,8 +289,8 @@ public class ProductService {
 	        .build();
 
 	      String query = "select * from product";
-	      Statement stmt = con.createStatement();
-	      ResultSet rs = stmt.executeQuery(query);
+	      Statement statement = con.createStatement();
+	      ResultSet resultset = statement.executeQuery(query);
 	      
 	      Client client = Client.create();
 	      WebResource webResource = client
@@ -322,16 +323,16 @@ public class ProductService {
 		  
 	      
 
-	      while (rs.next()) {
-	    	    int id = rs.getInt("id");
-		        String product_name = rs.getString("product_name");
-		        double product_price = rs.getDouble("product_price");
-		        int owner_id = rs.getInt("owner_id");
-		        int buyer_id = rs.getInt("buyer_id");
-		        String created_at = rs.getString("created_at");
-		        String updated_at = rs.getString("updated_at");
-		        boolean is_completed = rs.getBoolean("is_completed");
-		        int category_id = rs.getInt("category_id");
+	      while (resultset.next()) {
+	    	    int id = resultset.getInt("id");
+		        String product_name = resultset.getString("product_name");
+		        double product_price = resultset.getDouble("product_price");
+		        int owner_id = resultset.getInt("owner_id");
+		        int buyer_id = resultset.getInt("buyer_id");
+		        String created_at = resultset.getString("created_at");
+		        String updated_at = resultset.getString("updated_at");
+		        boolean is_completed = resultset.getBoolean("is_completed");
+		        int category_id = resultset.getInt("category_id");
 		        Product product = new Product(product_name, product_price, owner_id, is_completed, category_id);
 		        product.setCreated_at(created_at);
 		        product.setBuyerId(buyer_id);
@@ -394,15 +395,15 @@ public class ProductService {
 		  preparedStmt.setString(1, product.getProductName());
 		  preparedStmt.setDouble(2, product.getProductPrice());
 		  preparedStmt.setInt(3, product.getId());
-		  
+		  product.setCreated_at("few seconds ago");
 		  preparedStmt.execute();
 		  con.close();
 		  }
-		  catch (Exception e)
+		  catch (SQLException e)
 		  {
 			  return Response
 				        .status(Response.Status.INTERNAL_SERVER_ERROR)
-				        .entity("Error while updating the item")
+				        .entity("Error while updating the product")
 				        .build();
 		  }
 		  

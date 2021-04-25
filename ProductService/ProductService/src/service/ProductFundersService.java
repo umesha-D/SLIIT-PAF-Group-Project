@@ -27,7 +27,7 @@ public class ProductFundersService {
       Connection con = connection.getConnection();
       if (con == null) return Response
         .status(Response.Status.INTERNAL_SERVER_ERROR)
-        .entity("DataBase connectivity Error")
+        .entity("Database connectivity Error")
         .build();
 
       String query = "INSERT INTO funders(id,funder_id) VALUES (?, ?)";
@@ -60,7 +60,7 @@ public class ProductFundersService {
       Connection con = connection.getConnection();
       if (con == null) return Response
         .status(Response.Status.INTERNAL_SERVER_ERROR)
-        .entity("DataBase connectivity Error")
+        .entity("Database connectivity Error")
         .build();
 
       String queryForGetProductData = "SELECT * FROM product WHERE id = " + productid;
@@ -142,7 +142,7 @@ public class ProductFundersService {
 		      Connection con = connection.getConnection();
 		      if (con == null) return Response
 		        .status(Response.Status.INTERNAL_SERVER_ERROR)
-		        .entity("DataBase connectivity Error")
+		        .entity("Database connectivity Error")
 		        .build();
 
 		      String queryForGetProductData = "SELECT * FROM product";
