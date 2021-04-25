@@ -1,11 +1,8 @@
 package fundingbody;
 
 import java.util.HashMap;
-<<<<<<< HEAD
 import java.util.List;
 import java.util.Map;
-=======
->>>>>>> b89e1ab6e6c7003368121754fa21839e60eed5a0
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -15,11 +12,8 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-<<<<<<< HEAD
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
-=======
->>>>>>> b89e1ab6e6c7003368121754fa21839e60eed5a0
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -31,7 +25,6 @@ import com.sun.jersey.api.client.WebResource;
  *default Port : 8682 
  *http://localhost:8682/APIGateway/api/v2/fbody/*
 */
-<<<<<<< HEAD
 @Path("/fbody") 
 public class FundingBody {
 	
@@ -144,12 +137,6 @@ public class FundingBody {
 			        .build();
 	}
 	
-=======
-
-
-@Path("/fbody") 
-public class FundingBody {
->>>>>>> b89e1ab6e6c7003368121754fa21839e60eed5a0
 	@POST
 	@Path("/register")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -183,7 +170,6 @@ public class FundingBody {
 	@GET
 	@Path("/getfbodys")
 	@Produces(MediaType.APPLICATION_JSON)
-<<<<<<< HEAD
 	public Response getAllfbodies(@Context HttpHeaders httpheaders) {
 		Object output = null;
 		List<String> token = httpheaders.getRequestHeader("token");
@@ -202,10 +188,6 @@ public class FundingBody {
     		        .entity("Unauthrized access")
     		        .build();
 		}
-=======
-	public Response getAllfbodies() {
-		Object output = null;
->>>>>>> b89e1ab6e6c7003368121754fa21839e60eed5a0
 		try {
 
 	        Client client = Client.create();
@@ -238,7 +220,6 @@ public class FundingBody {
 	@Path("/getfbodybyid/{fbodyidId}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-<<<<<<< HEAD
 	public Response getFBodyById(@PathParam("fbodyidId") Integer fbodyidId, @Context HttpHeaders httpheaders) {
 		Object output = null;
 		List<String> token = httpheaders.getRequestHeader("token");
@@ -257,10 +238,6 @@ public class FundingBody {
     		        .entity("Unauthrized access")
     		        .build();
 		}
-=======
-	public Response getFBodyById(@PathParam("fbodyidId") Integer fbodyidId) {
-		Object output = null;
->>>>>>> b89e1ab6e6c7003368121754fa21839e60eed5a0
 		try {
 
 	        Client client = Client.create();
@@ -294,7 +271,6 @@ public class FundingBody {
 	@Path("/update/{fbodyidId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-<<<<<<< HEAD
 	public Response updateBuyer(HashMap<String, ?> fbodyData, @PathParam("fbodyidId") Integer fbodyidId, @Context HttpHeaders httpheaders) {
 		Object output = null;
 		List<String> token = httpheaders.getRequestHeader("token");
@@ -314,10 +290,6 @@ public class FundingBody {
     		        .build();
 		}
 		
-=======
-	public Response updateBuyer(HashMap<String, ?> fbodyData, @PathParam("fbodyidId") Integer fbodyidId) {
-		Object output = null;
->>>>>>> b89e1ab6e6c7003368121754fa21839e60eed5a0
 		try {
 
 	        Client client = Client.create();
@@ -348,7 +320,6 @@ public class FundingBody {
 	@Path("/deletebyid/{fbodyidId}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-<<<<<<< HEAD
 	public Response deleteById(@PathParam("fbodyidId") Integer fbodyidId, @Context HttpHeaders httpheaders) {
 		Object output = null;
 		List<String> token = httpheaders.getRequestHeader("token");
@@ -368,10 +339,6 @@ public class FundingBody {
     		        .build();
 		}
 		
-=======
-	public Response deleteById(@PathParam("fbodyidId") Integer fbodyidId) {
-		Object output = null;
->>>>>>> b89e1ab6e6c7003368121754fa21839e60eed5a0
 		try {
 
 	        Client client = Client.create();
@@ -400,7 +367,6 @@ public class FundingBody {
 			        .build();
 	}
 	
-<<<<<<< HEAD
 	@GET
 	@Path("/viewproducts")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -496,8 +462,6 @@ public class FundingBody {
 			        .entity(output)
 			        .build();
 	}
-=======
->>>>>>> b89e1ab6e6c7003368121754fa21839e60eed5a0
 	
 	
 }

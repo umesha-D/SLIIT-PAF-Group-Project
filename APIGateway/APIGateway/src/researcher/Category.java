@@ -163,7 +163,7 @@ public class Category {
 	          .delete(ClientResponse.class);
 
 	        if (response.getStatus() != 200) {
-	          throw new RuntimeException("Failed : HTTP error code : " +
+	          throw new RuntimeException("Something went wrong durig this process : " +
 	            response.getStatus());
 	        }
 	        output = response.getEntity(Object.class);

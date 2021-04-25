@@ -7,7 +7,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 
 /*
@@ -63,7 +65,7 @@ public class Review {
 
 	        output = response.getEntity(Object.class);
 
-	      } catch (Exception e) {
+	      } catch (ClientHandlerException | UniformInterfaceException e) {
 	    	  return Response
 	    		        .status(Response.Status.INTERNAL_SERVER_ERROR)
 	    		        .entity(e)
@@ -86,14 +88,14 @@ public class Review {
 	        Client client = Client.create();
 
 	        WebResource webResource = client
-	          .resource("http://localhost:8090/ResearcherService/api/v2/review/getreview"+reviewid);
+	          .resource("http://localhost:8090/ResearcherService/api/v2/review/getreview/"+reviewid);
 
 	        ClientResponse response = webResource.accept("application/json")
 	          .get(ClientResponse.class);
 
 	        output = response.getEntity(Object.class);
 
-	      } catch (Exception e) {
+	      } catch (ClientHandlerException | UniformInterfaceException e) {
 	    	  return Response
 	    		        .status(Response.Status.INTERNAL_SERVER_ERROR)
 	    		        .entity(e)
@@ -117,7 +119,7 @@ public class Review {
 	        Client client = Client.create();
 
 	        WebResource webResource = client
-	          .resource("http://localhost:8090/ResearcherService/api/v2/review/deletebyid"+reviewid);
+	          .resource("http://localhost:8090/ResearcherService/api/v2/review/deletebyid/"+reviewid);
 
 	        ClientResponse response = webResource.accept("application/json")
 	          .delete(ClientResponse.class);
@@ -148,7 +150,7 @@ public class Review {
 	        Client client = Client.create();
 
 	        WebResource webResource = client
-	          .resource("http://localhost:8090/ResearcherService/api/v2/review/getreiewwithdata"+reviewid);
+	          .resource("http://localhost:8090/ResearcherService/api/v2/review/getreiewwithdata/"+reviewid);
 
 	        ClientResponse response = webResource.accept("application/json")
 	          .get(ClientResponse.class);
@@ -178,7 +180,7 @@ public class Review {
 	        Client client = Client.create();
 
 	        WebResource webResource = client
-	          .resource("http://localhost:8090/ResearcherService/api/v2/review/getreiewwithdata/user"+researcherid);
+	          .resource("http://localhost:8090/ResearcherService/api/v2/review/getreiewwithdata/user/"+researcherid);
 
 	        ClientResponse response = webResource.accept("application/json")
 	          .get(ClientResponse.class);

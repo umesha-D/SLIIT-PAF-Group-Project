@@ -31,10 +31,6 @@ public class Buyer {
 	public boolean validate(String email, String token) {
 		Object output = null;
 		try {
-<<<<<<< HEAD
-=======
-
->>>>>>> b89e1ab6e6c7003368121754fa21839e60eed5a0
 	        Client client = Client.create();
 
 	        WebResource webResource = client
@@ -175,7 +171,6 @@ public class Buyer {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getBuyers(@Context HttpHeaders httpheaders) {
 		Object output = null;
-<<<<<<< HEAD
 		List<String> token = httpheaders.getRequestHeader("token");
 		List<String> email = httpheaders.getRequestHeader("email");
 		if(token == null || email == null) {
@@ -192,24 +187,6 @@ public class Buyer {
     		        .entity("Unauthrized access")
     		        .build();
 		}
-=======
-//		List<String> token = httpheaders.getRequestHeader("token");
-//		List<String> email = httpheaders.getRequestHeader("email");
-//		if(token == null || email == null) {
-//			return Response
-//    		        .status(Response.Status.FORBIDDEN)
-//    		        .entity("No token provided")
-//    		        .build();
-//		}
-//		boolean isValid = validate(email.get(0),token.get(0));
-//		
-//		if(!isValid) {
-//			return Response
-//    		        .status(Response.Status.FORBIDDEN)
-//    		        .entity("Unauthrized access")
-//    		        .build();
-//		}
->>>>>>> b89e1ab6e6c7003368121754fa21839e60eed5a0
 		try {
 
 	        Client client = Client.create();
@@ -472,4 +449,51 @@ public class Buyer {
 			        .build();
 	}
 
+	
+	@POST
+	@Path("/sumbit")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response addReview(HashMap<String, ?> reviewData, @PathParam("buyerid") Integer buyerid, @Context HttpHeaders httpheaders) {
+		Object output = null;
+		List<String> token = httpheaders.getRequestHeader("token");
+		List<String> email = httpheaders.getRequestHeader("email");
+		boolean isValid = validate(email.get(0),token.get(0));
+		
+		if(token == null || email == null) {
+			return Response
+    		        .status(Response.Status.FORBIDDEN)
+    		        .entity("No token provided")
+    		        .build();
+		}
+		
+		if(!isValid) {
+			return Response
+    		        .status(Response.Status.FORBIDDEN)
+    		        .entity("Unauthrized access")
+    		        .build();
+		}
+		try {
+
+	        Client client = Client.create();
+
+	        WebResource webResource = client
+	          .resource("http://localhost:8090/ResearcherService/api/v2/review/sumbit");
+
+	        ClientResponse response = webResource.accept("application/json")
+	          .post(ClientResponse.class, reviewData);
+
+	        output = response.getEntity(Object.class);
+
+	      } catch (Exception e) {
+	    	  return Response
+	    		        .status(Response.Status.INTERNAL_SERVER_ERROR)
+	    		        .entity(e)
+	    		        .build();
+	      }
+			return Response
+			        .status(Response.Status.OK)
+			        .entity(output)
+			        .build();
+	}
 }

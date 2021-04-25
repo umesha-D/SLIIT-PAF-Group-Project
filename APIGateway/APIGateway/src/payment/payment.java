@@ -20,11 +20,6 @@ import com.sun.jersey.api.client.WebResource;
  *default Port : 8682 
  *http://localhost:8682/APIGateway/api/v2/payment/*
 */
-<<<<<<< HEAD
-=======
-
-
->>>>>>> b89e1ab6e6c7003368121754fa21839e60eed5a0
 @Path("/payment") 
 public class payment {
 	@POST
@@ -52,7 +47,7 @@ public class payment {
 	    		        .build();
 	      }
 			return Response
-			        .status(Response.Status.OK)
+			        .status(Response.Status.CREATED)
 			        .entity(output)
 			        .build();
 	}
@@ -135,7 +130,7 @@ public class payment {
 	        Client client = Client.create();
 
 	        WebResource webResource = client
-	          .resource("http://localhost:8081/PaymentService/api/v2/payment/deletebyid"+paymentId);
+	          .resource("http://localhost:8081/PaymentService/api/v2/payment/deletebyid/"+paymentId);
 
 	        ClientResponse response = webResource.accept("application/json")
 	          .delete(ClientResponse.class);
@@ -222,9 +217,4 @@ public class payment {
 			        .entity(output)
 			        .build();
 	}
-<<<<<<< HEAD
-=======
-	
-	
->>>>>>> b89e1ab6e6c7003368121754fa21839e60eed5a0
 }

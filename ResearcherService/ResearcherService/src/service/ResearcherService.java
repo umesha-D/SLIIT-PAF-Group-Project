@@ -23,6 +23,16 @@ public class ResearcherService {
 	private DBConnection connection = new DBConnection();
 
 	public Response addResearcher(HashMap<String, ?> researcherData) throws SQLException {
+		Researcher research = new Researcher();
+		research.setName((String) researcherData.get("name"));
+		research.setEmail((String) researcherData.get("email"));
+		research.setPassword((String) researcherData.get("password"));
+		research.setResearchCategory((new Long((long) researcherData.get("researchCategory"))).intValue());
+		research.setCreatedAt("Just now");
+		research.setUpdatedAt("Just yet updated");
+		research.setToken("not logged in");
+		research.setId(1);
+		
 
 		      Connection con = connection.getConnection();
 		      if (con == null) return Response
@@ -45,7 +55,7 @@ public class ResearcherService {
 		   
 		    return Response
 		      .status(Response.Status.CREATED)
-		      .entity("Researcher inserted succesfully")
+		      .entity(research)
 		      .build();
 	}
 
@@ -279,7 +289,6 @@ public class ResearcherService {
 	}
 
 	public Response updateResearcher(HashMap<String, ?> researcherData, Integer researcherid) throws SQLException {
-	
 			  Connection con = connection.getConnection();
 		      if (con == null) return Response
 		        .status(Response.Status.INTERNAL_SERVER_ERROR)

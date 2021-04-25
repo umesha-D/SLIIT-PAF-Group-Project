@@ -142,7 +142,7 @@ public class Researcher {
 	        Client client = Client.create();
 
 	        WebResource webResource = client
-	          .resource("http://localhost:8090/ResearcherService/api/v2/researcher/register/");
+	          .resource("http://localhost:8090/ResearcherService/api/v2/researcher/register");
 
 	        ClientResponse response = webResource.accept("application/json")
 	          .post(ClientResponse.class, researcherData);
@@ -156,7 +156,7 @@ public class Researcher {
 	    		        .build();
 	      }
 			return Response
-			        .status(Response.Status.OK)
+			        .status(Response.Status.CREATED)
 			        .entity(output)
 			        .build();
 	}
@@ -193,7 +193,7 @@ public class Researcher {
 	        Client client = Client.create();
 
 	        WebResource webResource = client
-	          .resource("http://localhost:8090/ResearcherService/api/v2/researcher/getresearchers/");
+	          .resource("http://localhost:8090/ResearcherService/api/v2/researcher/getresearchers");
 
 	        ClientResponse response = webResource.accept("application/json")
 	          .get(ClientResponse.class);
@@ -474,7 +474,7 @@ public class Researcher {
 	    		        .build();
 	      }
 			return Response
-			        .status(Response.Status.OK)
+			        .status(Response.Status.CREATED)
 			        .entity(output)
 			        .build();
 	}
